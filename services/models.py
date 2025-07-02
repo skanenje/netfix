@@ -32,3 +32,8 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if self.field == 'All in One':
+            raise ValueError("Services cannot have 'All in One' as field.")
+        super().save(*args, **kwargs)
