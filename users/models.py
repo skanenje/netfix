@@ -4,10 +4,16 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=150, unique=True)
     is_company = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
-    email = models.CharField(max_length=100, unique=True)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    def __str__(self):
+        return self.email
 
 class Customer(models.Model):
     pass
