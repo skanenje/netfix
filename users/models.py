@@ -2,6 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+
+def validate_dob(value):
+    if value > timezone.now().date():
+        raise ValidationError("Date of birth cannot be in the future.")
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
@@ -16,8 +22,16 @@ class User(AbstractUser):
         return self.email
 
 class Customer(models.Model):
-    pass
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name='customer_profile'
+    )
+    date_of_birth = models.DateField(validators=[validate_dob])
 
+    def __str__(self):
+        return f"{self.user.username} - Customer"
 
 class Company(models.Model):
     user = models.OneToOneField(
