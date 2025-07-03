@@ -38,7 +38,22 @@ class CustomerSignUpForm(UserCreationForm):
 
 
 class CompanySignUpForm(UserCreationForm):
-    pass
+    email = forms.EmailField()
+    field = forms.ChoiceField(choices=Company._meta.get_field('field').choices)
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['email', 'username', 'password1', 'password2']
+
+    @transaction.atomic
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.is_company = True
+        user.save()
+        Company.objects.create(user=user, field=self.cleaned_data['field'])
+        return user
 
 
 class UserLoginForm(forms.Form):
