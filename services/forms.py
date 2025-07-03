@@ -1,29 +1,30 @@
+# services/forms.py
+
 from django import forms
-from users.models import Company, Customer
 from .models import Service
+from .choices import SERVICE_FIELD_CHOICES
+from users.models import Company
 
 
-class CreateNewService(forms.Form):
-    name = forms.CharField(max_length=40)
-    description = forms.CharField(widget=forms.Textarea, label='Description')
-    price_hour = forms.DecimalField(
-        decimal_places=2, max_digits=5, min_value=0.00)
-    field = forms.ChoiceField(required=True)
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ['name', 'description', 'price_hour', 'field']
 
     def __init__(self, *args, company=None, **kwargs):
-        super(CreateNewService, self).__init__(*args, **kwargs)
+        super(ServiceForm, self).__init__(*args, **kwargs)
 
         # Set choices based on the company's field
         if company:
             if company.field == 'All in One':
-                from .choices import SERVICE_FIELD_CHOICES
                 self.fields['field'].choices = SERVICE_FIELD_CHOICES
             else:
-                self.fields['field'].choices = [(company.field, company.field)]
-                self.fields['field'].initial = company.field
-                self.fields['field'].widget = forms.HiddenInput()  # Auto-select for non All-in-One companies
+                fixed_choice = (company.field, company.field)
+                self.fields['field'].choices = [fixed_choice]
+                self.fields['field'].initial = fixed_choice
+                self.fields['field'].widget = forms.HiddenInput()
 
-        # Add placeholders
+        # Add placeholders and UX improvements
         self.fields['name'].widget.attrs.update({'placeholder': 'Enter Service Name', 'autocomplete': 'off'})
         self.fields['description'].widget.attrs['placeholder'] = 'Enter Description'
         self.fields['price_hour'].widget.attrs['placeholder'] = 'Enter Price per Hour'

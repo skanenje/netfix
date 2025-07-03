@@ -30,3 +30,16 @@ class Service(models.Model):
             super().save(*args, **kwargs)
         else:
             raise ValueError(f"A {self.company.field} company cannot offer a {self.field} service.")
+        
+
+
+class RequestedService(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    address = models.TextField()
+    hours_requested = models.PositiveIntegerField()
+    date_requested = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def calculated_cost(self):
+        return self.service.price_hour * self.hours_requested
