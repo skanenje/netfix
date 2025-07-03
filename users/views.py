@@ -53,3 +53,25 @@ def LoginUserView(request):
     else:
         form = UserLoginForm()
     return render(request, 'users/login.html', {'form': form})
+
+@login_required
+def profile_view(request):
+    user = request.user
+    if user.is_customer:
+        customer = user.customer_profile
+        services = RequestedService.objects.filter(customer=customer)
+        return render(request, 'users/profile.html', {
+            'user': user,
+            'customer': customer,
+            'services': services
+        })
+    elif user.is_company:
+        company = user.company_profile
+        services = company.services.all()  # from Service model
+        return render(request, 'users/profile.html', {
+            'user': user,
+            'company': company,
+            'services': services
+        })
+    else:
+        return redirect('/')
