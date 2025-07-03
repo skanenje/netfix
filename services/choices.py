@@ -1,4 +1,4 @@
-# choices.py
+# services/choices.py
 
 FIELD_CHOICES = (
     ('Air Conditioner', 'Air Conditioner'),
@@ -14,3 +14,5 @@ FIELD_CHOICES = (
     ('Plumbing', 'Plumbing'),
     ('Water Heaters', 'Water Heaters'),
 )
+
+SERVICE_FIELD_CHOICES = [choice for choice in FIELD_CHOICES if choice[0] != 'All in One']
