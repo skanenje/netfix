@@ -12,12 +12,12 @@ def service_list(request):
     return render(request, 'services/list.html', {'services': services})
 
 
-def service_detail(request, id):
+def index(request, id):
     service = get_object_or_404(Service, id=id)
     return render(request, 'services/single_service.html', {'service': service})
 
 @login_required
-def create_service(request):
+def create(request):
     user = request.user
 
     # Make sure the user is a company
@@ -38,7 +38,7 @@ def create_service(request):
 
     return render(request, 'services/create.html', {'form': form})
 
-def service_by_field(request, field):
+def service_field(request, field):
     field = field.replace('-', ' ').title()
     services = Service.objects.filter(field=field)
     return render(request, 'services/field.html', {'services': services, 'field': field})
