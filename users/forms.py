@@ -68,3 +68,15 @@ class UserLoginForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(UserLoginForm, self).__init__(*args, **kwargs)
         self.fields['email'].widget.attrs['autocomplete'] = 'off'
+        
+    def clean(self):
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+
+        if email and password:
+            self.user_cache = authenticate(email=email, password=password)
+            if self.user_cache is None:
+                raise forms.ValidationError("Invalid email or password.")
+            elif not self.user_cache.is_active:
+                raise forms.ValidationError("Account is disabled.")
+        return self.cleaned_data
