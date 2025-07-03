@@ -18,7 +18,23 @@ def validate_email(value):
 
 
 class CustomerSignUpForm(UserCreationForm):
-    pass
+    email = forms.EmailField()
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['email', 'username', 'password1', 'password2']
+
+    @transaction.atomic
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.is_customer = True
+        user.save()
+        customer = Customer.objects.create(user=user, date_of_birth=self.cleaned_data['date_of_birth'])
+        return user
+
 
 
 class CompanySignUpForm(UserCreationForm):
