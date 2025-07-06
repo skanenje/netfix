@@ -1,11 +1,32 @@
-{% extends 'main/base.html' %} 
-    {% block title %}
-        NetFix
-    {% endblock %}
+{% extends 'main/base.html' %}
+{% block title %}NetFix{% endblock %}
 
 {% block content %}
-    <div style="margin-top: 50px;">
-        <p class="site_title">NetFix</p>
-        <img class="home_logo" src="static/css/logo.png" alt="logo">
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-subtitle">WELCOME TO NETFIX</div>
+      <h1 class="hero-title">Professional Services at Your Fingertips</h1>
+      <p class="hero-description">
+        Connect with trusted professionals for all your service needs.
+        From home repairs to specialized services, we've got you covered with our comprehensive platform.
+      </p>
+      <div class="hero-buttons">
+        <a href="/register" class="btn-primary">Get Started</a>
+        <a href="#services" class="btn-secondary">Browse Services</a>
+      </div>
     </div>
+    <div class="hero-visual">
+      <div class="hero-image">
+        <div class="floating-bubbles">
+          <div class="bubble"></div>
+          <div class="bubble"></div>
+          <div class="bubble"></div>
+          <div class="bubble"></div>
+        </div>
+        <div style="font-size: 4rem; color: rgba(255,255,255,0.8);">🔧</div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}

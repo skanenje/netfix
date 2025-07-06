@@ -1,12 +1,17 @@
 {% extends 'main/base.html' %} 
 {% block title %}
-  Customer Registration
-{%endblock %}
+  {% if "company" in request.path %}Company{% else %}Customer{% endif %} Registration
+{% endblock %}
 
 {% block content %}
+<div class="content">
     <form method="POST">
         {% csrf_token %}
-        {{form}}
+        {{ form }}
+        {% if "company" in request.path %}
+            <span class="helptext">Choose your field above</span>
+        {% endif %}
         <button type="submit" name="register">Register</button>
     </form>
+</div>
 {% endblock %}

@@ -3,16 +3,41 @@
     Services List
 {% endblock %}
 {% block content %}
-    <p class="title">Services</p>
-    {% if user.is_company %}
-        <a class="create_service" href="/services/create"> Create Service</a>
+
+<p class="title">All Services</p>
+
+{% if user.is_company %}
+    <a class="create_service" href="/services/create">Create a New Service</a>
+{% endif %}
+
+<ul class="services_list">
+    {% if services and services.all %}
+        {% for service in services.all %}
+            <li class="service_list_info">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <a href="/services/{{ service.id }}" class="service-link">
+                            {{ service.name }}
+                        </a>
+                        <span style="font-weight: bold; color: #4CAF50;">
+                            — {{ service.price_hour }}€/hour
+                        </span>
+                        <pre style="margin-top: 10px;">{{ service.description }}</pre>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="margin: 0; font-size: small;">
+                            by <a href="/company/{{ service.company.user }}">{{ service.company.user }}</a>
+                        </p>
+                    </div>
+                </div>
+            </li>
+            {% if not forloop.last %}
+                <div class="line"></div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <h2 class="title">Sorry, no services available yet.</h2>
     {% endif %}
-    <div class='services_list'>
-        {% if services %}
-            {% for service in services.all %}
-            {% endfor %}
-        {% else %}
-            <h2>Sorry No services available yet</h2>
-        {% endif %}
-     </div>
+</ul>
+
 {% endblock %}
