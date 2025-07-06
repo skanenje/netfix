@@ -4,7 +4,8 @@ from django.contrib.auth import login, authenticate
 from django.views.generic import CreateView, TemplateView
 
 from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
-from .models import User, Company, Customer, RequestedService
+from .models import User, Company, Customer
+from services.models import RequestedService
 
 
 def register(request):
