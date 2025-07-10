@@ -9,7 +9,34 @@ from services.models import RequestedService
 
 
 def register(request):
+    user_type = request.GET.get('type')
+    if user_type == 'customer':
+        return redirect('customer_register')
+    elif user_type == 'company':
+        return redirect('company_register')
     return render(request, 'users/register.html')
+
+def customer_register(request):
+    if request.method == 'POST':
+        form = CustomerSignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/')
+    else:
+        form = CustomerSignUpForm()
+    return render(request, 'users/register_customer.html', {'form': form})
+
+def company_register(request):
+    if request.method == 'POST':
+        form = CompanySignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/')
+    else:
+        form = CompanySignUpForm()
+    return render(request, 'users/register_company.html', {'form': form})
 
 def LoginUserView(request):
     if request.method == 'POST':

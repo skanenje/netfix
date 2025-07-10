@@ -6,6 +6,8 @@ from . import views as v
 
 urlpatterns = [
     path('', v.register, name='register'),
-        path('login/', v.LoginUserView, name='login_user'),
-        path('profile/', v.profile_view, name='profile')
+    path('customer_register/', v.customer_register, name='customer_register'),
+    path('company_register/', v.company_register, name='company_register'),
+    path('login/', v.LoginUserView, name='login_user'),
+    path('profile/', v.profile_view, name='profile')
 ]
