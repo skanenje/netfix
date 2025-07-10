@@ -257,6 +257,11 @@ h1, h2, h3 {
   background-color: var(--primary-dark);
 }
 
+/* List Services Profile */
+.list_services_profile {
+  margin-bottom: 1rem;
+}
+
 /* Forms */
 form {
   margin: 0 auto;
