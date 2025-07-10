@@ -7,7 +7,7 @@ from services.models import Service
 
 
 def home(request):
-    return render(request, 'users/home.html', {'user': request.user})
+    return render(request, 'main/home.html', {'user': request.user})
 
 
 def customer_profile(request, name):

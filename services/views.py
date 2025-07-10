@@ -50,7 +50,7 @@ def request_service(request, id):
 
     # Make sure user is a customer
     if not hasattr(user, 'customer_profile'):
-        return redirect('service-detail', id=id)
+        return redirect(index, id=id)
 
     if request.method == 'POST':
         form = RequestServiceForm(request.POST)

@@ -60,20 +60,26 @@ def LoginUserView(request):
 def profile_view(request):
     user = request.user
     if user.is_customer:
-        customer = user.customer_profile
-        services = RequestedService.objects.filter(customer=customer)
-        return render(request, 'users/profile.html', {
-            'user': user,
-            'customer': customer,
-            'services': services
-        })
+        try:
+            customer = user.customer_profile
+            services = RequestedService.objects.filter(customer=customer)
+            return render(request, 'users/profile.html', {
+                'user': user,
+                'customer': customer,
+                'services': services
+            })
+        except Customer.DoesNotExist:
+            return render(request, 'users/profile.html', {'error': 'Customer profile not found'})
     elif user.is_company:
-        company = user.company_profile
-        services = company.services.all()  # from Service model
-        return render(request, 'users/profile.html', {
-            'user': user,
-            'company': company,
-            'services': services
-        })
+        try:
+            company = user.company_profile
+            services = company.services.all()  # from Service model
+            return render(request, 'users/profile.html', {
+                'user': user,
+                'company': company,
+                'services': services
+            })
+        except Company.DoesNotExist:
+            return render(request, 'users/profile.html', {'error': 'Company profile not found'})
     else:
         return redirect('/')
