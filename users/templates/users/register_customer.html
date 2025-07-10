@@ -5,13 +5,7 @@
 
 {% block content %}
 <div class="content">
-    <form method="POST">
-        {% csrf_token %}
-        {{ form }}
-        {% if "company" in request.path %}
-            <span class="helptext">Choose your field above</span>
-        {% endif %}
-        <button type="submit" name="register">Register</button>
-    </form>
+    <h2>Customer Registration</h2>
+    <p>Please register as a customer through the main registration page.</p>
 </div>
 {% endblock %}
