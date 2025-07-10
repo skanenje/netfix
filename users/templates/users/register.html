@@ -1,30 +1,459 @@
-{% extends 'main/base.html' %} 
-{% block title %}
-  User Type
-{% endblock %}
+{% extends 'main/base.html' %}
 
 {% block content %}
-<div class="content">
-    <p class="choice_text">Choose whether you want to be a customer or a company</p>
-
-    <div style="display: flex; justify-content: space-around; margin-top: 60px;">
-        <div class="choice">
-            <div class="img" id="company">
-                <a href="/register/company">
-                    <img src="/static/css/company.png" alt="company" />
-                </a>
+    <div class="register-container">
+        <div class="register-header">
+            <div class="logo">
+                <div class="logo-icon">N</div>
+                <span>NetFix</span>
             </div>
-            <p class="label_images">Company</p>
+            <h1 class="register-title">Create Your Account</h1>
+            <p class="register-subtitle">Join our community of trusted professionals and customers</p>
         </div>
 
-        <div class="choice">
-            <div class="img" id="customer">
-                <a href="/register/customer">
-                    <img src="/static/css/customer.png" alt="customer" />
-                </a>
+        <form class="register-form" id="registerForm">
+            <div class="success-message" id="successMessage">
+                Registration successful! Please check your email to verify your account.
             </div>
-            <p class="label_images">Customer</p>
-        </div>
+
+            <div class="user-type-toggle">
+                <button type="button" class="toggle-option active" data-type="customer">
+                    👤 Customer
+                </button>
+                <button type="button" class="toggle-option" data-type="company">
+                    🏢 Company
+                </button>
+            </div>
+
+            <!-- Customer Form -->
+            <div class="form-section active" id="customerForm">
+                <div class="form-group">
+                    <label class="form-label" for="customerEmail">Email Address</label>
+                    <input type="email" id="customerEmail" name="email" class="form-input" required>
+                    <div class="error-message" id="customerEmailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="customerUsername">Username</label>
+                    <input type="text" id="customerUsername" name="username" class="form-input" required>
+                    <div class="error-message" id="customerUsernameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="customerDateOfBirth">Date of Birth</label>
+                    <input type="date" id="customerDateOfBirth" name="dateOfBirth" class="form-input" required>
+                    <div class="error-message" id="customerDateOfBirthError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="customerPassword">Password</label>
+                    <input type="password" id="customerPassword" name="password" class="form-input" required>
+                    <div class="password-requirements">
+                        <div class="requirement">
+                            <div class="requirement-icon invalid" id="lengthReq">✓</div>
+                            <span>At least 8 characters</span>
+                        </div>
+                        <div class="requirement">
+                            <div class="requirement-icon invalid" id="uppercaseReq">✓</div>
+                            <span>One uppercase letter</span>
+                        </div>
+                        <div class="requirement">
+                            <div class="requirement-icon invalid" id="lowercaseReq">✓</div>
+                            <span>One lowercase letter</span>
+                        </div>
+                        <div class="requirement">
+                            <div class="requirement-icon invalid" id="numberReq">✓</div>
+                            <span>One number</span>
+                        </div>
+                    </div>
+                    <div class="error-message" id="customerPasswordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="customerPasswordConfirm">Confirm Password</label>
+                    <input type="password" id="customerPasswordConfirm" name="passwordConfirm" class="form-input" required>
+                    <div class="error-message" id="customerPasswordConfirmError"></div>
+                </div>
+            </div>
+
+            <!-- Company Form -->
+            <div class="form-section" id="companyForm">
+                <div class="form-group">
+                    <label class="form-label" for="companyEmail">Email Address</label>
+                    <input type="email" id="companyEmail" name="email" class="form-input" required>
+                    <div class="error-message" id="companyEmailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="companyUsername">Company Name</label>
+                    <input type="text" id="companyUsername" name="username" class="form-input" required>
+                    <div class="error-message" id="companyUsernameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="companyFieldOfWork">Field of Work</label>
+                    <select id="companyFieldOfWork" name="fieldOfWork" class="form-select" required>
+                        <option value="">Select your field of work</option>
+                        <option value="housekeeping">Housekeeping & Cleaning</option>
+                        <option value="plumbing">Plumbing</option>
+                        <option value="electrical">Electrical Services</option>
+                        <option value="interior-design">Interior Design</option>
+                        <option value="gardening">Gardening & Landscaping</option>
+                        <option value="air-conditioning">Air Conditioning & HVAC</option>
+                        <option value="carpentry">Carpentry & Woodwork</option>
+                        <option value="painting">Painting & Decoration</option>
+                        <option value="security">Security Services</option>
+                        <option value="catering">Catering & Food Services</option>
+                        <option value="photography">Photography & Videography</option>
+                        <option value="transportation">Transportation & Logistics</option>
+                        <option value="consulting">Consulting Services</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="error-message" id="companyFieldOfWorkError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="companyPassword">Password</label>
+                    <input type="password" id="companyPassword" name="password" class="form-input" required>
+                    <div class="password-requirements">
+                        <div class="requirement">
+                            <div class="requirement-icon invalid" id="companyLengthReq">✓</div>
+                            <span>At least 8 characters</span>
+                        </div>
+                        <div class="requirement">
+                            <div class="requirement-icon invalid" id="companyUppercaseReq">✓</div>
+                            <span>One uppercase letter</span>
+                        </div>
+                        <div class="requirement">
+                            <div class="requirement-icon invalid" id="companyLowercaseReq">✓</div>
+                            <span>One lowercase letter</span>
+                        </div>
+                        <div class="requirement">
+                            <div class="requirement-icon invalid" id="companyNumberReq">✓</div>
+                            <span>One number</span>
+                        </div>
+                    </div>
+                    <div class="error-message" id="companyPasswordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="companyPasswordConfirm">Confirm Password</label>
+                    <input type="password" id="companyPasswordConfirm" name="passwordConfirm" class="form-input" required>
+                    <div class="error-message" id="companyPasswordConfirmError"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">Create Account</button>
+
+            <div class="login-link">
+                Already have an account? <a href="/login">Sign in here</a>
+            </div>
+        </form>
     </div>
-</div>
+
+    <script>
+        // Simulated database for demo purposes
+        const existingUsers = {
+            emails: ['john@example.com', 'company@example.com'],
+            usernames: ['john_doe', 'acme_corp']
+        };
+
+        let currentUserType = 'customer';
+
+        // Toggle between customer and company forms
+        document.querySelectorAll('.toggle-option').forEach(button => {
+            button.addEventListener('click', function() {
+                const type = this.dataset.type;
+                currentUserType = type;
+                
+                // Update active states
+                document.querySelectorAll('.toggle-option').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show/hide form sections
+                document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+                document.getElementById(type + 'Form').classList.add('active');
+                
+                // Clear any existing error messages
+                document.querySelectorAll('.error-message').forEach(msg => {
+                    msg.classList.remove('show');
+                    msg.textContent = '';
+                });
+                document.querySelectorAll('.form-input').forEach(input => {
+                    input.classList.remove('error');
+                });
+            });
+        });
+
+        // Password validation
+        function validatePassword(password, prefix = '') {
+            const requirements = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /\d/.test(password)
+            };
+
+            // Update requirement indicators
+            document.getElementById(prefix + 'lengthReq').className = 
+                'requirement-icon ' + (requirements.length ? 'valid' : 'invalid');
+            document.getElementById(prefix + 'uppercaseReq').className = 
+                'requirement-icon ' + (requirements.uppercase ? 'valid' : 'invalid');
+            document.getElementById(prefix + 'lowercaseReq').className = 
+                'requirement-icon ' + (requirements.lowercase ? 'valid' : 'invalid');
+            document.getElementById(prefix + 'numberReq').className = 
+                'requirement-icon ' + (requirements.number ? 'valid' : 'invalid');
+
+            return Object.values(requirements).every(req => req);
+        }
+
+        // Real-time password validation
+        document.getElementById('customerPassword').addEventListener('input', function() {
+            validatePassword(this.value);
+        });
+
+        document.getElementById('companyPassword').addEventListener('input', function() {
+            validatePassword(this.value, 'company');
+        });
+
+        // Email validation
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Username validation
+        function validateUsername(username) {
+            const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
+            return usernameRegex.test(username);
+        }
+
+        // Date of birth validation (must be at least 18 years old)
+        function validateDateOfBirth(dateOfBirth) {
+            const today = new Date();
+            const birthDate = new Date(dateOfBirth);
+            const age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                return age - 1 >= 18;
+            }
+            return age >= 18;
+        }
+
+        // Show error message
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.add('error');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        // Clear error message
+        function clearError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.remove('error');
+            errorElement.classList.remove('show');
+            errorElement.textContent = '';
+        }
+
+        // Real-time validation
+        function setupRealTimeValidation() {
+            // Email validation
+            document.getElementById('customerEmail').addEventListener('blur', function() {
+                const email = this.value.trim();
+                if (!email) return;
+                
+                if (!validateEmail(email)) {
+                    showError('customerEmail', 'Please enter a valid email address');
+                } else if (existingUsers.emails.includes(email)) {
+                    showError('customerEmail', 'This email is already registered');
+                } else {
+                    clearError('customerEmail');
+                }
+            });
+
+            document.getElementById('companyEmail').addEventListener('blur', function() {
+                const email = this.value.trim();
+                if (!email) return;
+                
+                if (!validateEmail(email)) {
+                    showError('companyEmail', 'Please enter a valid email address');
+                } else if (existingUsers.emails.includes(email)) {
+                    showError('companyEmail', 'This email is already registered');
+                } else {
+                    clearError('companyEmail');
+                }
+            });
+
+            // Username validation
+            document.getElementById('customerUsername').addEventListener('blur', function() {
+                const username = this.value.trim();
+                if (!username) return;
+                
+                if (!validateUsername(username)) {
+                    showError('customerUsername', 'Username must be 3-20 characters long and contain only letters, numbers, underscores, and hyphens');
+                } else if (existingUsers.usernames.includes(username)) {
+                    showError('customerUsername', 'This username is already taken');
+                } else {
+                    clearError('customerUsername');
+                }
+            });
+
+            document.getElementById('companyUsername').addEventListener('blur', function() {
+                const username = this.value.trim();
+                if (!username) return;
+                
+                if (username.length < 2) {
+                    showError('companyUsername', 'Company name must be at least 2 characters long');
+                } else if (existingUsers.usernames.includes(username)) {
+                    showError('companyUsername', 'This company name is already taken');
+                } else {
+                    clearError('companyUsername');
+                }
+            });
+
+            // Date of birth validation
+            document.getElementById('customerDateOfBirth').addEventListener('blur', function() {
+                const dateOfBirth = this.value;
+                if (!dateOfBirth) return;
+                
+                if (!validateDateOfBirth(dateOfBirth)) {
+                    showError('customerDateOfBirth', 'You must be at least 18 years old to register');
+                } else {
+                    clearError('customerDateOfBirth');
+                }
+            });
+
+            // Password confirmation validation
+            document.getElementById('customerPasswordConfirm').addEventListener('blur', function() {
+                const password = document.getElementById('customerPassword').value;
+                const confirmPassword = this.value;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    showError('customerPasswordConfirm', 'Passwords do not match');
+                } else if (confirmPassword) {
+                    clearError('customerPasswordConfirm');
+                }
+            });
+
+            document.getElementById('companyPasswordConfirm').addEventListener('blur', function() {
+                const password = document.getElementById('companyPassword').value;
+                const confirmPassword = this.value;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    showError('companyPasswordConfirm', 'Passwords do not match');
+                } else if (confirmPassword) {
+                    clearError('companyPasswordConfirm');
+                }
+            });
+        }
+
+        // Initialize real-time validation
+        setupRealTimeValidation();
+
+        // Form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            const prefix = currentUserType === 'customer' ? 'customer' : 'company';
+            
+            // Clear all previous errors
+            document.querySelectorAll('.error-message').forEach(msg => {
+                msg.classList.remove('show');
+                msg.textContent = '';
+            });
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.classList.remove('error');
+            });
+
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            // Validate email
+            if (!validateEmail(data.email)) {
+                showError(prefix + 'Email', 'Please enter a valid email address');
+                isValid = false;
+            } else if (existingUsers.emails.includes(data.email)) {
+                showError(prefix + 'Email', 'This email is already registered');
+                isValid = false;
+            }
+
+            // Validate username
+            if (currentUserType === 'customer') {
+                if (!validateUsername(data.username)) {
+                    showError(prefix + 'Username', 'Username must be 3-20 characters long and contain only letters, numbers, underscores, and hyphens');
+                    isValid = false;
+                } else if (existingUsers.usernames.includes(data.username)) {
+                    showError(prefix + 'Username', 'This username is already taken');
+                } else {
+                    clearError(prefix + 'Username');
+                }
+            } else {
+                if (data.username.length < 2) {
+                    showError(prefix + 'Username', 'Company name must be at least 2 characters long');
+                    isValid = false;
+                } else if (existingUsers.usernames.includes(data.username)) {
+                    showError(prefix + 'Username', 'This company name is already taken');
+                    isValid = false;
+                }
+            }
+
+            // Validate date of birth (customer only)
+            if (currentUserType === 'customer' && !validateDateOfBirth(data.dateOfBirth)) {
+                showError(prefix + 'DateOfBirth', 'You must be at least 18 years old to register');
+                isValid = false;
+            }
+
+            // Validate field of work (company only)
+            if (currentUserType === 'company' && !data.fieldOfWork) {
+                showError(prefix + 'FieldOfWork', 'Please select your field of work');
+                isValid = false;
+            }
+
+            // Validate password
+            const passwordPrefix = currentUserType === 'company' ? 'company' : '';
+            if (!validatePassword(data.password, passwordPrefix)) {
+                showError(prefix + 'Password', 'Password does not meet the requirements');
+                isValid = false;
+            }
+
+            // Validate password confirmation
+            if (data.password !== data.passwordConfirm) {
+                showError(prefix + 'PasswordConfirm', 'Passwords do not match');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Simulate successful registration
+                document.getElementById('successMessage').classList.add('show');
+                
+                // Add to "database" for demo
+                existingUsers.emails.push(data.email);
+                existingUsers.usernames.push(data.username);
+                
+                // Reset form
+                this.reset();
+                
+                // Scroll to success message
+                document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+                
+                // In a real application, you would send the data to your server
+                console.log('Registration data:', data);
+            }
+        });
+
+        // Clear success message when switching user types
+        document.querySelectorAll('.toggle-option').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('successMessage').classList.remove('show');
+            });
+        });
+    </script>
 {% endblock %}
