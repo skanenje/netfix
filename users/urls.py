@@ -1,13 +1,11 @@
 from django.urls import path
-from django.contrib.auth import views
-
-from .forms import UserLoginForm
-from . import views as v
+from . import views
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
-    path('', v.register, name='register'),
-    path('customer_register/', v.customer_register, name='customer_register'),
-    path('company_register/', v.company_register, name='company_register'),
-    path('login/', v.LoginUserView, name='login_user'),
-    path('profile/', v.profile_view, name='profile')
+    path('register/', views.register, name='register'),
+    path('login/', views.LoginUserView, name='login_user'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('profile/', views.profile_view, name='profile'),
+    path('company/<int:user_id>/', views.company_profile, name='company_profile'),
 ]
