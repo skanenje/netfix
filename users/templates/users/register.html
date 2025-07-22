@@ -135,8 +135,10 @@ function showCompany() {
 }
 
 // Show company form if there were company form errors
-{% if user_type == 'company' %}
-    showCompany();
-{% endif %}
 </script>
+{% if user_type == 'company' %}
+<script>
+    showCompany();
+</script>
+{% endif %}
 {% endblock %}
