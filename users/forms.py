@@ -25,7 +25,7 @@ class CustomerSignUpForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['email', 'username', 'password1', 'password2']
+        fields = ['email', 'username', 'date_of_birth', 'password1', 'password2']
 
     @transaction.atomic
     def save(self, commit=True):
@@ -45,7 +45,7 @@ class CompanySignUpForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['email', 'username', 'password1', 'password2']
+        fields = ['email', 'username', 'field', 'password1', 'password2']
 
     @transaction.atomic
     def save(self, commit=True):
@@ -57,18 +57,9 @@ class CompanySignUpForm(UserCreationForm):
 
 
 class UserLoginForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
 
-    email = forms.EmailField(widget=forms.TextInput(
-        attrs={'placeholder': 'Enter Email'}))
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'}))
-
-    def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs['autocomplete'] = 'off'
-        
     def clean(self):
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')

@@ -9,11 +9,21 @@ from services.models import RequestedService, Service
 
 
 def register(request):
-    user_type = request.GET.get('type')
-    if user_type == 'customer':
-        return redirect('customer_register')
-    elif user_type == 'company':
-        return redirect('company_register')
+    if request.method == 'POST':
+        user_type = request.POST.get('user_type', 'customer')
+        if user_type == 'customer':
+            form = CustomerSignUpForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                return redirect('/')
+        else:  # company
+            form = CompanySignUpForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                return redirect('/')
+    
     return render(request, 'users/register.html')
 
 def customer_register(request):
