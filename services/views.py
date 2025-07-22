@@ -70,3 +70,11 @@ def request_service(request, id):
         'form': form,
         'service': service
     })
+
+def most_requested(request):
+    # Get services ordered by request count
+    from django.db.models import Count
+    services = Service.objects.annotate(
+        request_count=Count('requestedservice')
+    ).order_by('-request_count')
+    return render(request, 'services/most_requested.html', {'services': services})

@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.views.generic import CreateView, TemplateView
 
 from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
 from .models import User, Company, Customer
-from services.models import RequestedService
+from services.models import RequestedService, Service
 
 
 def register(request):
@@ -78,3 +78,15 @@ def profile_view(request):
             return render(request, 'users/profile.html', {'error': 'Company profile not found'})
     else:
         return redirect('/')
+
+def company_profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if not user.is_company:
+        return redirect('service-list')
+    
+    company = user.company_profile
+    services = Service.objects.filter(company=company)
+    return render(request, 'users/company_profile.html', {
+        'company': company,
+        'services': services
+    })
