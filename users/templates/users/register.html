@@ -248,29 +248,10 @@
             validatePassword(this.value, 'company');
         });
 
-        // Email validation
+        // Simplified email validation
         function validateEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email.trim().toLowerCase());
-        }
-
-        // Username validation
-        function validateUsername(username) {
-            const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
-            return usernameRegex.test(username);
-        }
-
-        // Date of birth validation (must be at least 18 years old)
-        function validateDateOfBirth(dateOfBirth) {
-            const today = new Date();
-            const birthDate = new Date(dateOfBirth);
-            const age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                return age - 1 >= 18;
-            }
-            return age >= 18;
+            return emailRegex.test(email);
         }
 
         // Show error message
@@ -293,14 +274,12 @@
             errorElement.textContent = '';
         }
 
-        // Real-time validation
+        // Simplified real-time validation (optional)
         function setupRealTimeValidation() {
-            // Email validation
+            // Minimal email validation only
             document.getElementById('customerEmail').addEventListener('blur', function() {
-                const email = this.value.trim().toLowerCase();
-                if (!email) return;
-                
-                if (!validateEmail(email)) {
+                const email = this.value.trim();
+                if (email && !validateEmail(email)) {
                     showError('customerEmail', 'Please enter a valid email address');
                 } else {
                     clearError('customerEmail');
@@ -308,75 +287,11 @@
             });
 
             document.getElementById('companyEmail').addEventListener('blur', function() {
-                const email = this.value.trim().toLowerCase();
-                if (!email) return;
-                
-                if (!validateEmail(email)) {
+                const email = this.value.trim();
+                if (email && !validateEmail(email)) {
                     showError('companyEmail', 'Please enter a valid email address');
                 } else {
                     clearError('companyEmail');
-                }
-            });
-
-            // Username validation
-            document.getElementById('customerUsername').addEventListener('blur', function() {
-                const username = this.value.trim();
-                if (!username) return;
-                
-                if (!validateUsername(username)) {
-                    showError('customerUsername', 'Username must be 3-20 characters long and contain only letters, numbers, underscores, and hyphens');
-                } else if (existingUsers.usernames.includes(username)) {
-                    showError('customerUsername', 'This username is already taken');
-                } else {
-                    clearError('customerUsername');
-                }
-            });
-
-            document.getElementById('companyUsername').addEventListener('blur', function() {
-                const username = this.value.trim();
-                if (!username) return;
-                
-                if (username.length < 2) {
-                    showError('companyUsername', 'Company name must be at least 2 characters long');
-                } else if (existingUsers.usernames.includes(username)) {
-                    showError('companyUsername', 'This company name is already taken');
-                } else {
-                    clearError('companyUsername');
-                }
-            });
-
-            // Date of birth validation
-            document.getElementById('customerDateOfBirth').addEventListener('blur', function() {
-                const dateOfBirth = this.value;
-                if (!dateOfBirth) return;
-                
-                if (!validateDateOfBirth(dateOfBirth)) {
-                    showError('customerDateOfBirth', 'You must be at least 18 years old to register');
-                } else {
-                    clearError('customerDateOfBirth');
-                }
-            });
-
-            // Password confirmation validation
-            document.getElementById('customerPasswordConfirm').addEventListener('blur', function() {
-                const password = document.getElementById('customerPassword').value;
-                const confirmPassword = this.value;
-                
-                if (confirmPassword && password !== confirmPassword) {
-                    showError('customerPasswordConfirm', 'Passwords do not match');
-                } else if (confirmPassword) {
-                    clearError('customerPasswordConfirm');
-                }
-            });
-
-            document.getElementById('companyPasswordConfirm').addEventListener('blur', function() {
-                const password = document.getElementById('companyPassword').value;
-                const confirmPassword = this.value;
-                
-                if (confirmPassword && password !== confirmPassword) {
-                    showError('companyPasswordConfirm', 'Passwords do not match');
-                } else if (confirmPassword) {
-                    clearError('companyPasswordConfirm');
                 }
             });
         }
@@ -384,7 +299,7 @@
         // Initialize real-time validation
         setupRealTimeValidation();
 
-        // Form submission
+        // Simplified form submission
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -407,57 +322,29 @@
                 input.removeAttribute('required');
             });
 
-            // Validate email
-            if (!validateEmail(data.email)) {
+            // Basic validation - only check if required fields are filled
+            if (!data.email || !validateEmail(data.email)) {
                 showError(prefix + 'Email', 'Please enter a valid email address');
                 isValid = false;
-            }  else if (existingUsers.emails.includes(data.email)) {
-                showError(prefix + 'Email', 'This email is already registered');
+            }
+
+            if (!data.username) {
+                showError(prefix + 'Username', 'Please enter a username');
                 isValid = false;
             }
 
-            // Validate username
-            if (currentUserType === 'customer') {
-                if (!validateUsername(data.username)) {
-                    showError(prefix + 'Username', 'Username must be 3-20 characters long and contain only letters, numbers, underscores, and hyphens');
-                    isValid = false;
-                } else if (existingUsers.usernames.includes(data.username)) {
-                    showError(prefix + 'Username', 'This username is already taken');
-                } else {
-                    clearError(prefix + 'Username');
-                }
-            }  else {
-                if (data.username.length < 2) {
-                    showError(prefix + 'Username', 'Company name must be at least 2 characters long');
-                    isValid = false;
-                } else if (existingUsers.usernames.includes(data.username)) {
-                    showError(prefix + 'Username', 'This company name is already taken');
-                    isValid = false;
-                }
-            }
-
-            // Validate date of birth (customer only)
-            if (currentUserType === 'customer' && !validateDateOfBirth(data.dateOfBirth)) {
-                showError(prefix + 'DateOfBirth', 'You must be at least 18 years old to register');
+            if (!data.password) {
+                showError(prefix + 'Password', 'Please enter a password');
                 isValid = false;
             }
 
-            // Validate field of work (company only)
-            if (currentUserType === 'company' && !data.fieldOfWork) {
-                showError(prefix + 'FieldOfWork', 'Please select your field of work');
-                isValid = false;
-            }
-
-            // Validate password
-            const passwordPrefix = currentUserType === 'company' ? 'company' : '';
-            if (!validatePassword(data.password, passwordPrefix)) {
-                showError(prefix + 'Password', 'Password does not meet the requirements');
-                isValid = false;
-            }
-
-            // Validate password confirmation
             if (data.password !== data.passwordConfirm) {
                 showError(prefix + 'PasswordConfirm', 'Passwords do not match');
+                isValid = false;
+            }
+
+            if (currentUserType === 'company' && !data.fieldOfWork) {
+                showError(prefix + 'FieldOfWork', 'Please select your field of work');
                 isValid = false;
             }
 
@@ -466,20 +353,13 @@
                 // Simulate successful registration
                 document.getElementById('successMessage').classList.add('show');
                 
-                // Add to "database" for demo
-                existingUsers.emails.push(data.email);
-                existingUsers.usernames.push(data.username);
-                
                 // Reset form
                 this.reset();
                 
                 // Scroll to success message
                 document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
                 
-                // In a real application, you would send the data to your server
                 console.log('Registration data:', data);
-            } else {
-                console.log('Form is invalid, preventing submission');
             }
         });
 
