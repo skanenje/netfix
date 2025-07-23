@@ -251,7 +251,7 @@
         // Email validation
         function validateEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
+            return emailRegex.test(email.trim().toLowerCase());
         }
 
         // Username validation
@@ -297,26 +297,22 @@
         function setupRealTimeValidation() {
             // Email validation
             document.getElementById('customerEmail').addEventListener('blur', function() {
-                const email = this.value.trim();
+                const email = this.value.trim().toLowerCase();
                 if (!email) return;
                 
                 if (!validateEmail(email)) {
                     showError('customerEmail', 'Please enter a valid email address');
-                } else if (existingUsers.emails.includes(email)) {
-                    showError('customerEmail', 'This email is already registered');
                 } else {
                     clearError('customerEmail');
                 }
             });
 
             document.getElementById('companyEmail').addEventListener('blur', function() {
-                const email = this.value.trim();
+                const email = this.value.trim().toLowerCase();
                 if (!email) return;
                 
                 if (!validateEmail(email)) {
                     showError('companyEmail', 'Please enter a valid email address');
-                } else if (existingUsers.emails.includes(email)) {
-                    showError('companyEmail', 'This email is already registered');
                 } else {
                     clearError('companyEmail');
                 }
