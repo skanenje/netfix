@@ -12,7 +12,8 @@
             <p class="register-subtitle">Join our community of trusted professionals and customers</p>
         </div>
 
-        <form class="register-form" id="registerForm">
+        <form class="register-form" id="registerForm" method="post">
+            {% csrf_token %}
             <div class="success-message" id="successMessage">
                 Registration successful! Please check your email to verify your account.
             </div>
@@ -299,7 +300,7 @@
         // Initialize real-time validation
         setupRealTimeValidation();
 
-        // Simplified form submission
+        // Form submission that actually works with Django
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -308,59 +309,32 @@
                 input.disabled = false;
             });
             
-            let isValid = true;
-            const prefix = currentUserType === 'customer' ? 'customer' : 'company';
-            
-            // Get form data
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
             
-            // Re-disable inactive form fields
-            const inactiveForm = currentUserType === 'customer' ? 'companyForm' : 'customerForm';
-            document.getElementById(inactiveForm).querySelectorAll('input, select').forEach(input => {
-                input.disabled = true;
-                input.removeAttribute('required');
+            // Add user type to form data
+            formData.append('user_type', currentUserType);
+            
+            // Submit to Django backend
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('successMessage').classList.add('show');
+                    this.reset();
+                } else {
+                    console.error('Registration failed:', data.errors);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-
-            // Basic validation - only check if required fields are filled
-            if (!data.email || !validateEmail(data.email)) {
-                showError(prefix + 'Email', 'Please enter a valid email address');
-                isValid = false;
-            }
-
-            if (!data.username) {
-                showError(prefix + 'Username', 'Please enter a username');
-                isValid = false;
-            }
-
-            if (!data.password) {
-                showError(prefix + 'Password', 'Please enter a password');
-                isValid = false;
-            }
-
-            if (data.password !== data.passwordConfirm) {
-                showError(prefix + 'PasswordConfirm', 'Passwords do not match');
-                isValid = false;
-            }
-
-            if (currentUserType === 'company' && !data.fieldOfWork) {
-                showError(prefix + 'FieldOfWork', 'Please select your field of work');
-                isValid = false;
-            }
-
-            if (isValid) {
-                console.log('Form is valid, proceeding with submission');
-                // Simulate successful registration
-                document.getElementById('successMessage').classList.add('show');
-                
-                // Reset form
-                this.reset();
-                
-                // Scroll to success message
-                document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
-                
-                console.log('Registration data:', data);
-            }
         });
 
         // Clear success message when switching user types

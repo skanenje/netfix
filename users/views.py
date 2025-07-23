@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.views.generic import CreateView, TemplateView
+import json
+from django.http import JsonResponse
 
 from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
 from .models import User, Company, Customer
@@ -9,11 +11,27 @@ from services.models import RequestedService
 
 
 def register(request):
-    user_type = request.GET.get('type')
-    if user_type == 'customer':
-        return redirect('customer_register')
-    elif user_type == 'company':
-        return redirect('company_register')
+    if request.method == 'POST':
+        user_type = request.POST.get('user_type')
+        
+        if user_type == 'customer':
+            form = CustomerSignUpForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                return JsonResponse({'success': True, 'redirect': '/'})
+            else:
+                return JsonResponse({'success': False, 'errors': form.errors})
+                
+        elif user_type == 'company':
+            form = CompanySignUpForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                return JsonResponse({'success': True, 'redirect': '/'})
+            else:
+                return JsonResponse({'success': False, 'errors': form.errors})
+    
     return render(request, 'users/register.html')
 
 def customer_register(request):
@@ -48,6 +66,8 @@ def LoginUserView(request):
             if user is not None:
                 login(request, user)
                 return redirect('/')
+            else:
+                form.add_error(None, 'Invalid email or password')
     else:
         form = UserLoginForm()
     return render(request, 'users/login.html', {'form': form})
