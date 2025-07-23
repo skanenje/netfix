@@ -161,6 +161,23 @@
 
         let currentUserType = 'customer';
 
+        // Initialize form on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Disable company form fields initially since customer is active
+            const companyForm = document.getElementById('companyForm');
+            companyForm.querySelectorAll('input, select').forEach(input => {
+                input.disabled = true;
+                input.removeAttribute('required');
+            });
+            
+            // Ensure customer form fields are enabled
+            const customerForm = document.getElementById('customerForm');
+            customerForm.querySelectorAll('input, select').forEach(input => {
+                input.disabled = false;
+                input.setAttribute('required', 'required');
+            });
+        });
+
         // Toggle between customer and company forms
         document.querySelectorAll('.toggle-option').forEach(button => {
             button.addEventListener('click', function() {
@@ -171,9 +188,23 @@
                 document.querySelectorAll('.toggle-option').forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
                 
-                // Show/hide form sections
-                document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
-                document.getElementById(type + 'Form').classList.add('active');
+                // Show/hide form sections and disable/enable inputs
+                document.querySelectorAll('.form-section').forEach(section => {
+                    section.classList.remove('active');
+                    // Disable inputs in hidden sections
+                    section.querySelectorAll('input, select').forEach(input => {
+                        input.disabled = true;
+                        input.removeAttribute('required');
+                    });
+                });
+                
+                const activeSection = document.getElementById(type + 'Form');
+                activeSection.classList.add('active');
+                // Enable inputs in active section
+                activeSection.querySelectorAll('input, select').forEach(input => {
+                    input.disabled = false;
+                    input.setAttribute('required', 'required');
+                });
                 
                 // Clear any existing error messages
                 document.querySelectorAll('.error-message').forEach(msg => {
@@ -361,27 +392,30 @@
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            // Re-enable all fields temporarily for form data collection
+            document.querySelectorAll('.form-section input, .form-section select').forEach(input => {
+                input.disabled = false;
+            });
+            
             let isValid = true;
             const prefix = currentUserType === 'customer' ? 'customer' : 'company';
             
-            // Clear all previous errors
-            document.querySelectorAll('.error-message').forEach(msg => {
-                msg.classList.remove('show');
-                msg.textContent = '';
-            });
-            document.querySelectorAll('.form-input').forEach(input => {
-                input.classList.remove('error');
-            });
-
             // Get form data
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
+            
+            // Re-disable inactive form fields
+            const inactiveForm = currentUserType === 'customer' ? 'companyForm' : 'customerForm';
+            document.getElementById(inactiveForm).querySelectorAll('input, select').forEach(input => {
+                input.disabled = true;
+                input.removeAttribute('required');
+            });
 
             // Validate email
             if (!validateEmail(data.email)) {
                 showError(prefix + 'Email', 'Please enter a valid email address');
                 isValid = false;
-            } else if (existingUsers.emails.includes(data.email)) {
+            }  else if (existingUsers.emails.includes(data.email)) {
                 showError(prefix + 'Email', 'This email is already registered');
                 isValid = false;
             }
@@ -396,7 +430,7 @@
                 } else {
                     clearError(prefix + 'Username');
                 }
-            } else {
+            }  else {
                 if (data.username.length < 2) {
                     showError(prefix + 'Username', 'Company name must be at least 2 characters long');
                     isValid = false;
@@ -432,6 +466,7 @@
             }
 
             if (isValid) {
+                console.log('Form is valid, proceeding with submission');
                 // Simulate successful registration
                 document.getElementById('successMessage').classList.add('show');
                 
@@ -447,6 +482,8 @@
                 
                 // In a real application, you would send the data to your server
                 console.log('Registration data:', data);
+            } else {
+                console.log('Form is invalid, preventing submission');
             }
         });
 
