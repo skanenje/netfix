@@ -1,93 +1,100 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
-from django.contrib import messages
+from django.contrib.auth import login, authenticate
+from django.views.generic import CreateView, TemplateView
+import json
+from django.http import JsonResponse
 
 from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
 from .models import User, Company, Customer
-from services.models import RequestedService, Service
+from services.models import RequestedService
 
 
 def register(request):
     if request.method == 'POST':
-        user_type = request.POST.get('user_type', 'customer')
+        user_type = request.POST.get('user_type')
         
         if user_type == 'customer':
             form = CustomerSignUpForm(request.POST)
             if form.is_valid():
                 user = form.save()
                 login(request, user)
-                messages.success(request, 'Registration successful!')
-                return redirect('/')
+                return JsonResponse({'success': True, 'redirect': '/'})
             else:
-                return render(request, 'users/register.html', {
-                    'customer_form': form,
-                    'company_form': CompanySignUpForm(),
-                    'user_type': user_type
-                })
-        else:
+                return JsonResponse({'success': False, 'errors': form.errors})
+                
+        elif user_type == 'company':
             form = CompanySignUpForm(request.POST)
             if form.is_valid():
                 user = form.save()
                 login(request, user)
-                messages.success(request, 'Registration successful!')
-                return redirect('/')
+                return JsonResponse({'success': True, 'redirect': '/'})
             else:
-                return render(request, 'users/register.html', {
-                    'customer_form': CustomerSignUpForm(),
-                    'company_form': form,
-                    'user_type': user_type
-                })
+                return JsonResponse({'success': False, 'errors': form.errors})
     
-    return render(request, 'users/register.html', {
-        'customer_form': CustomerSignUpForm(),
-        'company_form': CompanySignUpForm()
-    })
+    return render(request, 'users/register.html')
 
+def customer_register(request):
+    if request.method == 'POST':
+        form = CustomerSignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/')
+    else:
+        form = CustomerSignUpForm()
+    return render(request, 'users/register_customer.html', {'form': form})
+
+def company_register(request):
+    if request.method == 'POST':
+        form = CompanySignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/')
+    else:
+        form = CompanySignUpForm()
+    return render(request, 'users/register_company.html', {'form': form})
 
 def LoginUserView(request):
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            messages.success(request, 'Login successful!')
-            return redirect('/')
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('/')
+            else:
+                form.add_error(None, 'Invalid email or password')
     else:
         form = UserLoginForm()
     return render(request, 'users/login.html', {'form': form})
 
-
-@login_required
 def profile_view(request):
     user = request.user
     if user.is_customer:
-        customer = user.customer_profile
-        services = RequestedService.objects.filter(customer=customer)
-        return render(request, 'users/profile.html', {
-            'user': user,
-            'customer': customer,
-            'services': services
-        })
+        try:
+            customer = user.customer_profile
+            services = RequestedService.objects.filter(customer=customer)
+            return render(request, 'users/profile.html', {
+                'user': user,
+                'customer': customer,
+                'services': services
+            })
+        except Customer.DoesNotExist:
+            return render(request, 'users/profile.html', {'error': 'Customer profile not found'})
     elif user.is_company:
-        company = user.company_profile
-        services = company.service_set.all()
-        return render(request, 'users/profile.html', {
-            'user': user,
-            'company': company,
-            'services': services
-        })
-    return redirect('/')
-
-
-def company_profile(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    if not user.is_company:
+        try:
+            company = user.company_profile
+            services = company.services.all()  # from Service model
+            return render(request, 'users/profile.html', {
+                'user': user,
+                'company': company,
+                'services': services
+            })
+        except Company.DoesNotExist:
+            return render(request, 'users/profile.html', {'error': 'Company profile not found'})
+    else:
         return redirect('/')
-    
-    company = user.company_profile
-    services = Service.objects.filter(company=company)
-    return render(request, 'users/company_profile.html', {
-        'company': company,
-        'services': services
-    })
