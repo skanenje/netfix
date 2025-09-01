@@ -1,0 +1,87 @@
+/* Registration Form Specific Styles */
+
+/* Override any existing button styles */
+.user-type-toggle .toggle-btn {
+    all: unset;
+    flex: 1;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    color: #666;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.user-type-toggle .toggle-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    opacity: 0;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.user-type-toggle .toggle-btn:hover:not(.active) {
+    color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+    transform: translateY(-1px);
+}
+
+.user-type-toggle .toggle-btn.active {
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transform: translateY(-1px);
+}
+
+.user-type-toggle .toggle-btn.active::before {
+    opacity: 1;
+}
+
+.user-type-toggle .toggle-btn span {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+/* Force form field styling */
+.register-form input,
+.register-form select {
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 10px !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1) !important;
+    box-sizing: border-box !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.register-form input:focus,
+.register-form select:focus {
+    outline: none !important;
+    border-color: #4CAF50 !important;
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1) !important;
+    transform: translateY(-1px) !important;
+}

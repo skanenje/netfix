@@ -432,6 +432,13 @@ body {
 
 main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Fix for pages with minimal content */
+.content {
+    flex: 1;
 }
 
 /* Modal Pages (Register/Login) */
@@ -645,6 +652,45 @@ main {
     display: block;
     width: 100%;
     box-sizing: border-box;
+}
+
+/* Django form widget overrides */
+#id_customer_form-email,
+#id_customer_form-username,
+#id_customer_form-date_of_birth,
+#id_customer_form-password1,
+#id_customer_form-password2,
+#id_company_form-email,
+#id_company_form-username,
+#id_company_form-field,
+#id_company_form-password1,
+#id_company_form-password2 {
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 10px !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1) !important;
+    box-sizing: border-box !important;
+    font-family: inherit !important;
+}
+
+#id_customer_form-email:focus,
+#id_customer_form-username:focus,
+#id_customer_form-date_of_birth:focus,
+#id_customer_form-password1:focus,
+#id_customer_form-password2:focus,
+#id_company_form-email:focus,
+#id_company_form-username:focus,
+#id_company_form-field:focus,
+#id_company_form-password1:focus,
+#id_company_form-password2:focus {
+    outline: none !important;
+    border-color: #4CAF50 !important;
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1) !important;
+    transform: translateY(-1px) !important;
 }
 
 /* Ensure form inputs are properly styled */
@@ -974,6 +1020,78 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding-top: 1rem;
     text-align: center;
     color: #888;
+}
+
+/* Registration Form Styles */
+.user-type-toggle {
+    display: flex;
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 6px;
+    margin-bottom: 2rem;
+    position: relative;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    width: 100%;
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    color: #666;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    opacity: 0;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.toggle-btn:hover:not(.active) {
+    color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+    transform: translateY(-1px);
+}
+
+.toggle-btn.active {
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transform: translateY(-1px);
+}
+
+.toggle-btn.active::before {
+    opacity: 1;
+}
+
+.toggle-btn span {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
 }
 
 /* Alert Messages */
