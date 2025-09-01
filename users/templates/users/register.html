@@ -14,16 +14,16 @@
         <p class="register-subtitle">Join our community</p>
     </div>
 
-    <form class="register-form" method="post" id="registerForm">
+    <form class="register-form" method="post" id="registerForm" novalidate>
         {% csrf_token %}
         <input type="hidden" name="user_type" id="userType" value="customer">
 
         <!-- User Type Toggle Buttons -->
         <div class="user-type-toggle">
-            <button type="button" class="toggle-btn active" onclick="showForm('customer')">
+            <button type="button" class="toggle-btn active" onclick="showForm('customer', this)">
                 <span>👤 Customer</span>
             </button>
-            <button type="button" class="toggle-btn" onclick="showForm('company')">
+            <button type="button" class="toggle-btn" onclick="showForm('company', this)">
                 <span>🏢 Company</span>
             </button>
         </div>
@@ -114,18 +114,61 @@
 </div>
 
 <script>
-    function showForm(type) {
-        document.getElementById('userType').value = type;
-        document.getElementById('customerFields').style.display = type === 'customer' ? 'block' : 'none';
-        document.getElementById('companyFields').style.display = type === 'company' ? 'block' : 'none';
-        
-        // Remove active class from all buttons
-        document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-        
-        // Add active class to the clicked button
-        const clickedButton = event.target.closest('.toggle-btn');
-        if (clickedButton) {
-            clickedButton.classList.add('active');
+    // Global variables
+    let currentFormType = 'customer';
+
+    function showForm(type, clickedElement) {
+        try {
+            currentFormType = type;
+            document.getElementById('userType').value = type;
+            
+            const customerFields = document.getElementById('customerFields');
+            const companyFields = document.getElementById('companyFields');
+            
+            if (type === 'customer') {
+                customerFields.style.display = 'block';
+                companyFields.style.display = 'none';
+                
+                // Enable customer form fields and disable company form fields
+                customerFields.querySelectorAll('input, select').forEach(field => {
+                    field.disabled = false;
+                    field.removeAttribute('disabled');
+                });
+                companyFields.querySelectorAll('input, select').forEach(field => {
+                    field.disabled = true;
+                    field.setAttribute('disabled', 'disabled');
+                });
+            } else {
+                customerFields.style.display = 'none';
+                companyFields.style.display = 'block';
+                
+                // Enable company form fields and disable customer form fields
+                companyFields.querySelectorAll('input, select').forEach(field => {
+                    field.disabled = false;
+                    field.removeAttribute('disabled');
+                });
+                customerFields.querySelectorAll('input, select').forEach(field => {
+                    field.disabled = true;
+                    field.setAttribute('disabled', 'disabled');
+                });
+            }
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to the clicked button
+            if (clickedElement) {
+                // Find the button element (could be the span inside)
+                let buttonElement = clickedElement;
+                if (clickedElement.tagName === 'SPAN') {
+                    buttonElement = clickedElement.parentElement;
+                }
+                if (buttonElement && buttonElement.classList.contains('toggle-btn')) {
+                    buttonElement.classList.add('active');
+                }
+            }
+        } catch (error) {
+            console.error('Error in showForm:', error);
         }
     }
 
@@ -134,128 +177,145 @@
         let isValid = true;
         const errors = {};
         
-        // Common validations for both forms
-        const email = document.querySelector(`#${formType}_form-email`).value.trim();
-        const username = document.querySelector(`#${formType}_form-username`).value.trim();
-        const password1 = document.querySelector(`#${formType}_form-password1`).value;
-        const password2 = document.querySelector(`#${formType}_form-password2`).value;
-        
-        // Clear previous error messages
-        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-        
-        // Email validation
-        if (!email) {
-            errors.email = 'Email is required';
-            isValid = false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            errors.email = 'Please enter a valid email address';
-            isValid = false;
-        }
-        
-        // Username validation
-        if (!username) {
-            errors.username = 'Username is required';
-            isValid = false;
-        } else if (username.length < 3) {
-            errors.username = 'Username must be at least 3 characters long';
-            isValid = false;
-        }
-        
-        // Password validation
-        if (!password1) {
-            errors.password1 = 'Password is required';
-            isValid = false;
-        } else if (password1.length < 8) {
-            errors.password1 = 'Password must be at least 8 characters long';
-            isValid = false;
-        } else if (!/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])/.test(password1)) {
-            errors.password1 = 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character';
-            isValid = false;
-        }
-        
-        // Confirm password
-        if (password1 !== password2) {
-            errors.password2 = 'Passwords do not match';
-            isValid = false;
-        }
-        
-        // Form specific validations
-        if (formType === 'customer') {
-            const dob = document.querySelector('#customer_form-date_of_birth').value;
-            if (!dob) {
-                errors.date_of_birth = 'Date of birth is required';
+        try {
+            // Get active form fields only
+            const activeContainer = formType === 'customer' ? 
+                document.getElementById('customerFields') : 
+                document.getElementById('companyFields');
+            
+            const emailField = activeContainer.querySelector('input[name="email"]');
+            const usernameField = activeContainer.querySelector('input[name="username"]');
+            const password1Field = activeContainer.querySelector('input[name="password1"]');
+            const password2Field = activeContainer.querySelector('input[name="password2"]');
+            
+            // Check if fields exist and get values
+            const email = emailField ? emailField.value.trim() : '';
+            const username = usernameField ? usernameField.value.trim() : '';
+            const password1 = password1Field ? password1Field.value : '';
+            const password2 = password2Field ? password2Field.value : '';
+            
+            // Clear previous error messages
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+            
+            // Email validation
+            if (!email) {
+                errors.email = 'Email is required';
                 isValid = false;
-            } else {
-                const birthDate = new Date(dob);
-                const today = new Date();
-                let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
-                
-                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                    age--;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errors.email = 'Please enter a valid email address';
+                isValid = false;
+            }
+            
+            // Username validation
+            if (!username) {
+                errors.username = 'Username is required';
+                isValid = false;
+            } else if (username.length < 3) {
+                errors.username = 'Username must be at least 3 characters long';
+                isValid = false;
+            }
+            
+            // Password validation
+            if (!password1) {
+                errors.password1 = 'Password is required';
+                isValid = false;
+            } else if (password1.length < 8) {
+                errors.password1 = 'Password must be at least 8 characters long';
+                isValid = false;
+            }
+            
+            // Confirm password
+            if (password1 !== password2) {
+                errors.password2 = 'Passwords do not match';
+                isValid = false;
+            }
+            
+            // Form specific validations
+            if (formType === 'customer') {
+                const dobField = activeContainer.querySelector('input[name="date_of_birth"]');
+                const dob = dobField ? dobField.value : '';
+                if (!dob) {
+                    errors.date_of_birth = 'Date of birth is required';
+                    isValid = false;
                 }
-                
-                if (age < 13) {
-                    errors.date_of_birth = 'You must be at least 13 years old to register';
+            } else if (formType === 'company') {
+                const fieldField = activeContainer.querySelector('select[name="field"]');
+                const field = fieldField ? fieldField.value : '';
+                if (!field) {
+                    errors.field = 'Field of work is required';
                     isValid = false;
                 }
             }
-        } else if (formType === 'company') {
-            const field = document.querySelector('#company_form-field').value;
-            if (!field) {
-                errors.field = 'Field of work is required';
-                isValid = false;
-            }
+            
+            // Display errors if any
+            Object.keys(errors).forEach(field => {
+                const fieldElement = activeContainer.querySelector(`input[name="${field}"], select[name="${field}"]`);
+                if (fieldElement) {
+                    const errorElement = fieldElement.parentNode.querySelector('.error-message');
+                    if (errorElement) {
+                        errorElement.textContent = errors[field];
+                    }
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error in validateForm:', error);
+            isValid = false;
         }
-        
-        // Display errors if any
-        Object.keys(errors).forEach(field => {
-            const errorElement = document.querySelector(`#${formType}_form-${field}`).parentNode.querySelector('.error-message');
-            if (errorElement) {
-                errorElement.textContent = errors[field];
-            }
-        });
         
         return isValid;
     }
 
-    // Form submission with validation and AJAX
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const userType = document.getElementById('userType').value;
-        if (!validateForm(userType)) {
-            return; // Stop form submission if validation fails
-        }
-        
-        const formData = new FormData(this);
-        fetch(window.location.href, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = data.redirect;
-            } else {
-                // Display errors (simplified - add to DOM as needed)
-                console.error('Errors:', data.errors);
-                // Example: Show errors in UI
-                Object.entries(data.errors).forEach(([field, error]) => {
-                    const errorDiv = document.querySelector(`[name="${field}"]`).nextElementSibling;
-                    if (errorDiv && errorDiv.classList.contains('error-message')) {
-                        errorDiv.textContent = error[0];
-                        errorDiv.classList.add('show');
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            // Set up form submission handler
+            const form = document.getElementById('registerForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const userType = document.getElementById('userType').value;
+                    if (!validateForm(userType)) {
+                        return;
                     }
+                    
+                    const formData = new FormData(this);
+                    fetch(window.location.href, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = data.redirect;
+                        } else {
+                            console.error('Errors:', data.errors);
+                            // Display server errors
+                            Object.entries(data.errors).forEach(([field, error]) => {
+                                const fieldElement = document.querySelector(`input[name="${field}"], select[name="${field}"]`);
+                                if (fieldElement && !fieldElement.disabled) {
+                                    const errorElement = fieldElement.parentNode.querySelector('.error-message');
+                                    if (errorElement) {
+                                        errorElement.textContent = Array.isArray(error) ? error[0] : error;
+                                    }
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
                 });
             }
-        })
-        .catch(error => console.error('Error:', error));
+            
+            // Initialize with customer form
+            showForm('customer', document.querySelector('.toggle-btn.active'));
+            
+        } catch (error) {
+            console.error('Error during initialization:', error);
+        }
     });
-
-    // Add real-time validation as in your original (password, email) - omitted for brevity, but keep if needed
 </script>
 {% endblock %}
