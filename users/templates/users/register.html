@@ -116,8 +116,15 @@
         document.getElementById('userType').value = type;
         document.getElementById('customerFields').style.display = type === 'customer' ? 'block' : 'none';
         document.getElementById('companyFields').style.display = type === 'company' ? 'block' : 'none';
+        
+        // Remove active class from all buttons
         document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
+        
+        // Add active class to the clicked button
+        const clickedButton = event.target.closest('.toggle-btn');
+        if (clickedButton) {
+            clickedButton.classList.add('active');
+        }
     }
 
     // Form validation

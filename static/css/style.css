@@ -417,6 +417,23 @@ body {
     color: #888;
 }
 
+/* Global Layout Fix for Footer */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
 /* Modal Pages (Register/Login) */
 .registration-page {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -427,6 +444,7 @@ body {
     padding: 2rem 0;
     position: relative;
     overflow: hidden;
+    flex: 1;
 }
 
 .registration-page::before {
@@ -497,24 +515,27 @@ body {
 
 .register-form {
     padding: 2.5rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .user-type-toggle {
     display: flex;
     background: #f8f9fa;
     border-radius: 15px;
-    padding: 8px;
+    padding: 6px;
     margin-bottom: 2rem;
     position: relative;
     box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
     border: 1px solid #e9ecef;
+    width: 100%;
 }
 
 .toggle-btn {
     flex: 1;
     padding: 1rem 1.5rem;
     text-align: center;
-    background: none;
+    background: transparent;
     border: none;
     border-radius: 10px;
     cursor: pointer;
@@ -522,9 +543,11 @@ body {
     font-size: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    z-index: 2;
     color: #666;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .toggle-btn::before {
@@ -536,8 +559,9 @@ body {
     bottom: 0;
     background: linear-gradient(135deg, #4CAF50, #45a049);
     opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 10px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    z-index: 1;
 }
 
 .toggle-btn:hover:not(.active) {
@@ -548,8 +572,8 @@ body {
 
 .toggle-btn.active {
     color: white;
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    transform: translateY(-1px);
 }
 
 .toggle-btn.active::before {
@@ -558,15 +582,17 @@ body {
 
 .toggle-btn span {
     position: relative;
-    z-index: 3;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    font-weight: 600;
 }
 
 .form-group {
     margin-bottom: 1.5rem;
+    width: 100%;
 }
 
 .form-group label {
@@ -575,6 +601,7 @@ body {
     font-weight: 600;
     color: #2c3e50;
     font-size: 0.95rem;
+    text-align: left;
 }
 
 .form-group input,
@@ -587,6 +614,7 @@ body {
     transition: all 0.3s ease;
     background: white;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -602,6 +630,10 @@ body {
     border-color: #4CAF50;
 }
 
+.form-fields {
+    width: 100%;
+}
+
 .error-message {
     color: #e74c3c;
     font-size: 0.875rem;
@@ -610,6 +642,38 @@ body {
     background: rgba(231, 76, 60, 0.1);
     border-radius: 6px;
     border-left: 3px solid #e74c3c;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Ensure form inputs are properly styled */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Style the date input specifically */
+input[type="date"] {
+    position: relative;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
 }
 
 .submit-btn {
@@ -698,6 +762,15 @@ body {
     .register-title {
         font-size: 1.75rem;
     }
+    
+    .toggle-btn {
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .toggle-btn span {
+        gap: 0.25rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -711,6 +784,16 @@ body {
     
     .register-header {
         padding: 1.5rem 1rem;
+    }
+    
+    .toggle-btn {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+        padding: 0.75rem;
     }
 }
 
@@ -893,6 +976,52 @@ body {
     color: #888;
 }
 
+/* Alert Messages */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+/* Content wrapper for better spacing */
+.content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    margin-top: 80px; /* Account for fixed header */
+    min-height: calc(100vh - 200px); /* Ensure minimum height for footer positioning */
+}
+
+/* Footer positioning */
+.footer {
+    margin-top: auto;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .hero-content {
@@ -910,5 +1039,10 @@ body {
 
     .services-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .content {
+        padding: 1rem;
+        margin-top: 70px;
     }
 }

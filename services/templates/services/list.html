@@ -1,13 +1,19 @@
 {% extends 'main/base.html' %}
 {% block title %}
-    Services List
+    {% if page_title %}{{ page_title }}{% else %}Services List{% endif %}
 {% endblock %}
 {% block content %}
 <div class="content">
-    <p class="title">All Services</p>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    <p class="title">{% if page_title %}{{ page_title }}{% else %}All Services{% endif %}</p>
 
     {% if user.is_company %}
-        <a class="create_service" href="{% url 'services_create' %}">Create a New Service</a>
+        <a class="create_service" href="{% url 'services:services_create' %}">Create a New Service</a>
     {% endif %}
 
     <ul class="services_list">
@@ -16,7 +22,7 @@
                 <li class="service_list_info">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <a href="{% url 'service_detail' service.id %}" class="service-link">
+                            <a href="{% url 'services:service_detail' service.id %}" class="service-link">
                                 {{ service.name }}
                             </a>
                             <span style="font-weight: bold; color: #4CAF50;">
@@ -25,7 +31,7 @@
                             <pre style="margin-top: 10px;">{{ service.description }}</pre>
                         </div>
                         <p style="text-align: right; margin: 0; font-size: small;">
-                            by <a href="{% url 'company_profile' service.company.user.id %}">{{ service.company.user.username }}</a>
+                            by <a href="{% url 'users:company_profile' service.company.user.id %}">{{ service.company.user.username }}</a>
                         </p>
                     </div>
                     {% if not forloop.last %}
