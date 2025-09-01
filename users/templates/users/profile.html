@@ -5,45 +5,56 @@
 
 {% block content %}
 <div class="content">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <div>
-            <h2>{{ user.username }}{% if user.is_customer %} ({{user_age}} y/o){% endif %}</h2>
-            <p>{{ user.email }}</p>
-        </div>
-        <span class="badge">
-            {% if user.is_customer %}
-                Customer
-            {% else %}
-                {{ user.company.field }} Company
-            {% endif %}
-        </span>
-    </div>
-
-    {% if 'customer' in request.path %}
-        <p class="title">Previous Requested Services</p>
-        {% for service in sh %}
-            <div class="service_list_info">
-                <a href="/services/{{service.service.id}}">
-                    {{service.service.name}}
-                </a> ({{service.service.field}})
-                <p style="margin: 0; display: inline-block;">❱❱ {{service.price}}</p>
-                <p style="margin: 0; display: inline-block;">❱❱ {{ service.request_date }}</p>
-                <p style="float: right; margin: 0;">
-                    by <a href="/company/{{service.service.company.user}}">
-                        {{service.service.company.user}}
-                    </a>
-                </p>
-            </div>
-            <div class="line"></div>
-        {% endfor %}
+    {% if error %}
+        <p>{{ error }}</p>
     {% else %}
-        <p class="title">Available Services</p>
-        {% for service in services %}
-            <div class="list_services_profile">
-                <a href="/services/{{service.id}}">{{service.name}}</a> — {{service.price_hour}}€/hour
-                <div class="line"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <h2>{{ user.username }}{% if user.is_customer %} ({{ user_age }} y/o){% endif %}</h2>
+                <p>{{ user.email }}</p>
+                {% if user.is_company %}
+                    <p>Field of Work: {{ company.field }}</p>
+                {% endif %}
             </div>
-        {% endfor %}
+            <span class="badge">
+                {% if user.is_customer %}
+                    Customer
+                {% else %}
+                    {{ company.field }} Company
+                {% endif %}
+            </span>
+        </div>
+
+        {% if user.is_customer %}
+            <p class="title">Previous Requested Services</p>
+            {% for req in services %}
+                <div class="service_list_info">
+                    <a href="{% url 'service_detail' req.service.id %}">
+                        {{ req.service.name }}
+                    </a> ({{ req.service.field }})
+                    <p style="margin: 0; display: inline-block;">❱❱ {{ req.calculated_cost }}</p>
+                    <p style="margin: 0; display: inline-block;">❱❱ {{ req.requested_date }}</p>
+                    <p style="float: right; margin: 0;">
+                        by <a href="{% url 'company_profile' req.service.company.user.id %}">
+                            {{ req.service.company.user.username }}
+                        </a>
+                    </p>
+                </div>
+                <div class="line"></div>
+            {% empty %}
+                <p>No requested services yet.</p>
+            {% endfor %}
+        {% else %}
+            <p class="title">Available Services</p>
+            {% for service in services %}
+                <div class="list_services_profile">
+                    <a href="{% url 'service_detail' service.id %}">{{ service.name }}</a> — {{ service.price_per_hour }}€/hour
+                    <div class="line"></div>
+                </div>
+            {% empty %}
+                <p>No services provided yet.</p>
+            {% endfor %}
+        {% endif %}
     {% endif %}
 </div>
 {% endblock %}
