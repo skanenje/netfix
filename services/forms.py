@@ -33,7 +33,7 @@ class ServiceForm(forms.ModelForm):
 
 class RequestServiceForm(forms.ModelForm):
     class Meta:
-        model = 'services.RequestedService'
+        model = RequestedService
         fields = ['address', 'hours_needed']
         
     def __init__(self, *args, **kwargs):
