@@ -174,6 +174,7 @@
 
     // Form validation
     function validateForm(formType) {
+        console.log('Validating form type:', formType);
         let isValid = true;
         const errors = {};
         
@@ -183,77 +184,78 @@
                 document.getElementById('customerFields') : 
                 document.getElementById('companyFields');
             
-            const emailField = activeContainer.querySelector('input[name="email"]');
-            const usernameField = activeContainer.querySelector('input[name="username"]');
-            const password1Field = activeContainer.querySelector('input[name="password1"]');
-            const password2Field = activeContainer.querySelector('input[name="password2"]');
+            console.log('Active container:', activeContainer);
             
-            // Check if fields exist and get values
-            const email = emailField ? emailField.value.trim() : '';
-            const username = usernameField ? usernameField.value.trim() : '';
-            const password1 = password1Field ? password1Field.value : '';
-            const password2 = password2Field ? password2Field.value : '';
+            // Find all input and select fields in the active container
+            const allFields = activeContainer.querySelectorAll('input, select');
+            console.log('Found fields:', allFields);
+            
+            // Get field values
+            let email = '', username = '', password1 = '', password2 = '', dob = '', field = '';
+            
+            allFields.forEach(fieldEl => {
+                const name = fieldEl.name || fieldEl.id;
+                console.log('Field name/id:', name, 'value:', fieldEl.value);
+                
+                if (name.includes('email')) email = fieldEl.value.trim();
+                else if (name.includes('username')) username = fieldEl.value.trim();
+                else if (name.includes('password1')) password1 = fieldEl.value;
+                else if (name.includes('password2')) password2 = fieldEl.value;
+                else if (name.includes('date_of_birth')) dob = fieldEl.value;
+                else if (name.includes('field')) field = fieldEl.value;
+            });
+            
+            console.log('Extracted values:', {email, username, password1, password2, dob, field});
             
             // Clear previous error messages
             document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
             
-            // Email validation
+            // Basic validation - just check if required fields have values
             if (!email) {
                 errors.email = 'Email is required';
                 isValid = false;
-            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                errors.email = 'Please enter a valid email address';
-                isValid = false;
             }
             
-            // Username validation
             if (!username) {
                 errors.username = 'Username is required';
                 isValid = false;
-            } else if (username.length < 3) {
-                errors.username = 'Username must be at least 3 characters long';
-                isValid = false;
             }
             
-            // Password validation
             if (!password1) {
                 errors.password1 = 'Password is required';
                 isValid = false;
-            } else if (password1.length < 8) {
-                errors.password1 = 'Password must be at least 8 characters long';
-                isValid = false;
             }
             
-            // Confirm password
-            if (password1 !== password2) {
+            if (!password2) {
+                errors.password2 = 'Confirm password is required';
+                isValid = false;
+            } else if (password1 !== password2) {
                 errors.password2 = 'Passwords do not match';
                 isValid = false;
             }
             
             // Form specific validations
-            if (formType === 'customer') {
-                const dobField = activeContainer.querySelector('input[name="date_of_birth"]');
-                const dob = dobField ? dobField.value : '';
-                if (!dob) {
-                    errors.date_of_birth = 'Date of birth is required';
-                    isValid = false;
-                }
-            } else if (formType === 'company') {
-                const fieldField = activeContainer.querySelector('select[name="field"]');
-                const field = fieldField ? fieldField.value : '';
-                if (!field) {
-                    errors.field = 'Field of work is required';
-                    isValid = false;
-                }
+            if (formType === 'customer' && !dob) {
+                errors.date_of_birth = 'Date of birth is required';
+                isValid = false;
             }
             
+            if (formType === 'company' && !field) {
+                errors.field = 'Field of work is required';
+                isValid = false;
+            }
+            
+            console.log('Validation errors:', errors);
+            console.log('Form is valid:', isValid);
+            
             // Display errors if any
-            Object.keys(errors).forEach(field => {
-                const fieldElement = activeContainer.querySelector(`input[name="${field}"], select[name="${field}"]`);
+            Object.keys(errors).forEach(errorField => {
+                // Find any field that contains this name
+                const fieldElement = activeContainer.querySelector(`input[name*="${errorField}"], select[name*="${errorField}"], input[id*="${errorField}"], select[id*="${errorField}"]`);
                 if (fieldElement) {
                     const errorElement = fieldElement.parentNode.querySelector('.error-message');
                     if (errorElement) {
-                        errorElement.textContent = errors[field];
+                        errorElement.textContent = errors[errorField];
                     }
                 }
             });
@@ -271,16 +273,30 @@
         try {
             // Set up form submission handler
             const form = document.getElementById('registerForm');
+            console.log('Form element found:', form);
+            
             if (form) {
                 form.addEventListener('submit', function(e) {
+                    console.log('Form submit event triggered');
                     e.preventDefault();
                     
                     const userType = document.getElementById('userType').value;
+                    console.log('User type:', userType);
+                    
                     if (!validateForm(userType)) {
+                        console.log('Validation failed, stopping submission');
                         return;
                     }
                     
+                    console.log('Validation passed, submitting form');
+                    
                     const formData = new FormData(this);
+                    
+                    // Log form data
+                    for (let [key, value] of formData.entries()) {
+                        console.log('Form data:', key, value);
+                    }
+                    
                     fetch(window.location.href, {
                         method: 'POST',
                         body: formData,
@@ -288,15 +304,20 @@
                             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
                         }
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        console.log('Response received:', response);
+                        return response.json();
+                    })
                     .then(data => {
+                        console.log('Response data:', data);
                         if (data.success) {
                             window.location.href = data.redirect;
                         } else {
-                            console.error('Errors:', data.errors);
+                            console.error('Server errors:', data.errors);
                             // Display server errors
                             Object.entries(data.errors).forEach(([field, error]) => {
-                                const fieldElement = document.querySelector(`input[name="${field}"], select[name="${field}"]`);
+                                console.log('Processing error for field:', field, error);
+                                const fieldElement = document.querySelector(`input[name*="${field}"], select[name*="${field}"], input[id*="${field}"], select[id*="${field}"]`);
                                 if (fieldElement && !fieldElement.disabled) {
                                     const errorElement = fieldElement.parentNode.querySelector('.error-message');
                                     if (errorElement) {
@@ -306,8 +327,12 @@
                             });
                         }
                     })
-                    .catch(error => console.error('Error:', error));
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                    });
                 });
+            } else {
+                console.error('Form element not found!');
             }
             
             // Initialize with customer form

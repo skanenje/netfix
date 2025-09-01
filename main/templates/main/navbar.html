@@ -11,7 +11,12 @@
         <li><a href="#contact">Contact</a></li>
         {% if request.user.is_authenticated %}
           <li><a href="{% url 'users:profile' %}">Profile</a></li>
-          <li><a href="{% url 'users:logout' %}" class="cta-button">Logout</a></li>
+          <li>
+            <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="cta-button" style="background: none; border: none; color: inherit; font: inherit; cursor: pointer; text-decoration: none;">Logout</button>
+            </form>
+          </li>
         {% else %}
           <li><a href="{% url 'users:login_user' %}" class="cta-button">Login</a></li>
           <li><a href="{% url 'users:register' %}" class="cta-button">Get Started</a></li>
