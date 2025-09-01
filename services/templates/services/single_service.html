@@ -4,22 +4,22 @@
 {% endblock %}
 
 {% block content %}
-    <div class="content">
-        <div class="service_info_header">
-            <h1>{{ service.name }} — {{ service.price_hour }}€/hour</h1>
-            <h5>by <a href="/company/{{ service.company.user }}">{{ service.company.user }}</a></h5>
-        </div>
-
-        <h3 style="margin-top: 20px; color: #ec2f00;">Field: {{ service.field }}</h3>
-
-        <p style="margin-top: 20px; text-align: left; white-space: pre-line;">
-            {{ service.description }}
-        </p>
-
-        {% if request.user.is_customer %}
-            <a href="/services/{{ service.id }}/request_service/" class="like_button" style="display: inline-block; margin-top: 30px;">
-                Request Service
-            </a>
-        {% endif %}
+<div class="content">
+    <div class="service_info_header">
+        <h1>{{ service.name }} — {{ service.price_per_hour }}€/hour</h1>
+        <h5>by <a href="{% url 'company_profile' service.company.user.id %}">{{ service.company.user.username }}</a></h5>
     </div>
+
+    <h3 style="margin-top: 20px; color: #ec2f00;">Field: {{ service.field }}</h3>
+
+    <p style="margin-top: 20px; text-align: left; white-space: pre-line;">
+        {{ service.description }}
+    </p>
+
+    {% if request.user.is_customer %}
+        <a href="{% url 'request_service' service.id %}" class="like_button" style="display: inline-block; margin-top: 30px;">
+            Request Service
+        </a>
+    {% endif %}
+</div>
 {% endblock %}

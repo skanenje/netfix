@@ -1,5 +1,3 @@
-# services/choices.py
-
 FIELD_CHOICES = (
     ('Air Conditioner', 'Air Conditioner'),
     ('All in One', 'All in One'),
@@ -7,7 +5,7 @@ FIELD_CHOICES = (
     ('Electricity', 'Electricity'),
     ('Gardening', 'Gardening'),
     ('Home Machines', 'Home Machines'),
-    ('House Keeping', 'House Keeping'),
+    ('Housekeeping', 'Housekeeping'),
     ('Interior Design', 'Interior Design'),
     ('Locks', 'Locks'),
     ('Painting', 'Painting'),

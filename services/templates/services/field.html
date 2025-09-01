@@ -5,36 +5,37 @@
 {% endblock %}
 
 {% block content %}
-    {% if services.all|length != 0 %}
+    {% if services %}
         <div class="content">
             <p class="title">{{ field }} Services</p>
             <ul class="services_list">
-                {% for service in services.all %}
+                {% for service in services %}
                     <li style="margin-bottom: 30px;">
                         <div class="service_list_info">
-                            <a href="/services/{{ service.id }}" style="font-weight: bold; font-size: 1.2em;">
+                            <a href="{% url 'service_detail' service.id %}" style="font-weight: bold; font-size: 1.2em;">
                                 {{ service.name }}
                             </a> — 
-                            <span>{{ service.price_hour }}€/hour</span>
+                            <span>{{ service.price_per_hour }}€/hour</span>
                             <pre>{{ service.description }}</pre>
                         </div>
                         <p style="text-align: right; font-size: small; margin: 5px 0;">
                             by 
-                            <a href="/company/{{ service.company.user }}">
-                                {{ service.company.user }}
+                            <a href="{% url 'company_profile' service.company.user.id %}">
+                                {{ service.company.user.username }}
                             </a>
                         </p>
-
                         {% if not forloop.last %}
                             <div class="line"></div>
                         {% endif %}
                     </li>
+                {% empty %}
+                    <h2>Sorry, no {{ field }} services available.</h2>
                 {% endfor %}
             </ul>
         </div>
     {% else %}
         <div class="content">
-            <h2>Sorry. No {{ field }} services available.</h2>
+            <h2>Sorry, no {{ field }} services available.</h2>
         </div>
     {% endif %}
 {% endblock %}
