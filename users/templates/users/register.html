@@ -1,6 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+<div class="registration-page">
 <div class="register-container">
     <div class="register-header">
         <div class="logo">
@@ -15,10 +16,14 @@
         {% csrf_token %}
         <input type="hidden" name="user_type" id="userType" value="customer">
 
-        <!-- Simple Toggle Buttons -->
+        <!-- User Type Toggle Buttons -->
         <div class="user-type-toggle">
-            <button type="button" class="toggle-btn active" onclick="showForm('customer')">Customer</button>
-            <button type="button" class="toggle-btn" onclick="showForm('company')">Company</button>
+            <button type="button" class="toggle-btn active" onclick="showForm('customer')">
+                <span>👤 Customer</span>
+            </button>
+            <button type="button" class="toggle-btn" onclick="showForm('company')">
+                <span>🏢 Company</span>
+            </button>
         </div>
 
         <div id="customerFields" class="form-fields">
@@ -100,9 +105,10 @@
         <button type="submit" class="submit-btn" id="submitBtn">Create Account</button>
 
         <div class="login-link">
-            Already have an account? <a href="{% url 'login_user' %}">Sign in here</a>
+            Already have an account? <a href="{% url 'users:login_user' %}">Sign in here</a>
         </div>
     </form>
+</div>
 </div>
 
 <script>

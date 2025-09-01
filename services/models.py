@@ -8,7 +8,10 @@ class Service(models.Model):
     name = models.CharField(max_length=40)
     description = models.TextField()
     price_per_hour = models.DecimalField(
-        decimal_places=2, max_digits=10, validators=[MinValueValidator(0)]
+        decimal_places=2, 
+        max_digits=10, 
+        validators=[MinValueValidator(0)],
+        default=0.00
     )
     field = models.CharField(max_length=30, blank=False, null=False, choices=SERVICE_FIELD_CHOICES)
     created_date = models.DateTimeField(auto_now_add=True, null=False)
