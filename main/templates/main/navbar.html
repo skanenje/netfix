@@ -1,33 +1,21 @@
- <div class="nav-container">
-  <div class="logo">
-   <div class="logo-icon">N</div>
-   <span>NetFix</span>
+<div class="nav-container">
+    <div class="logo">
+      <div class="logo-icon">N</div>
+      <span>NetFix</span>
+    </div>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="{% url 'main:home' %}">Home</a></li>
+        <li><a href="{% url 'services:services_list' %}">Services</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+        {% if request.user.is_authenticated %}
+          <li><a href="{% url 'users:profile' %}">Profile</a></li>
+          <li><a href="{% url 'users:logout' %}" class="cta-button">Logout</a></li>
+        {% else %}
+          <li><a href="{% url 'users:login_user' %}" class="cta-button">Login</a></li>
+          <li><a href="{% url 'users:register' %}" class="cta-button">Get Started</a></li>
+        {% endif %}
+      </ul>
+    </nav>
   </div>
-  <nav>
-   <ul class="nav-menu">
-    <li><a href="/">Home</a></li>
-    <li><a href="/#services">Services</a></li>
-    <li><a href="/#about">About</a></li>
-    <li><a href="/#contact">Contact</a></li>
-    {% if request.user.is_authenticated %}
-    <li><a href="/company/{{ request.user.username }}">Profile</a></li>
-    {% else %}
-    <li><a href="/register/login/" class="cta-button">Login</a></li>
-    <li><a href="/register" class="cta-button">Get Started</a></li>
-    {% endif %}
-   </ul>
-  </nav>
- </div>
-  
-
-
-
-
-
-
-
-
-
-
-
-

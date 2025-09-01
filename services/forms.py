@@ -1,5 +1,5 @@
 from django import forms
-from .models import Service
+from .models import Service, RequestedService
 from .choices import SERVICE_FIELD_CHOICES
 from users.models import Company
 
@@ -33,9 +33,9 @@ class ServiceForm(forms.ModelForm):
 
 class RequestServiceForm(forms.ModelForm):
     class Meta:
-        model = RequestedService
+        model = 'services.RequestedService'
         fields = ['address', 'hours_needed']
-
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['address'].widget = forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter full address where service is needed'})

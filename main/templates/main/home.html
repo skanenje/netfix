@@ -2,111 +2,132 @@
 {% block title %}NetFix{% endblock %}
 
 {% block content %}
-
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container">
-        <div class="hero-content">
-            <div class="hero-text">
-                <div class="hero-subtitle">WELCOME TO NETFIX</div>
-                <h1 class="hero-title">Professional Services at Your Fingertips</h1>
-                <p class="hero-description">
-                    Connect with trusted professionals for all your service needs. From home repairs to specialized services, 
-                    we've got you covered with our comprehensive platform.
-                </p>
-                <div class="hero-buttons">
-                    <a href="/register" class="btn-primary">Get Started</a>
-                    <a href="#services" class="btn-secondary">Browse Services</a>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="hero-image">
-                    <div class="floating-bubbles">
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                    </div>
-                    <div style="font-size: 4rem; color: rgba(255,255,255,0.8);">🔧</div>
-                </div>
-            </div>
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-subtitle">WELCOME TO NETFIX</div>
+          <h1 class="hero-title">Professional Services at Your Fingertips</h1>
+          <p class="hero-description">
+            Connect with trusted professionals for all your service needs. From home repairs to specialized services, 
+            we've got you covered with our comprehensive platform.
+          </p>
+          <div class="hero-buttons">
+            <a href="{% url 'users:register' %}" class="btn-primary">Get Started</a>
+            <a href="{% url 'services:services_list' %}" class="btn-secondary">Browse Services</a>
+          </div>
         </div>
+        <div class="hero-visual">
+          <div class="hero-image">
+            <div class="floating-bubbles">
+              <div class="bubble"></div>
+              <div class="bubble"></div>
+              <div class="bubble"></div>
+              <div class="bubble"></div>
+            </div>
+            <div style="font-size: 4rem; color: rgba(255,255,255,0.8);">🔧</div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Popular Services Section -->
-    <section class="services" id="services">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-subtitle">WHAT WE OFFER</div>
-                <h2 class="section-title">Our Most Popular Services</h2>
-            </div>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">🏠</div>
-                    <h3 class="service-title">Housekeeping</h3>
-                    <p class="service-description">Professional cleaning services for your home. Regular maintenance and deep cleaning options available.</p>
-                    <a href="/services/housekeeping" class="service-link">Learn More →</a>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🔧</div>
-                    <h3 class="service-title">Plumbing</h3>
-                    <p class="service-description">Expert plumbing solutions for repairs, installations, and emergency services available 24/7.</p>
-                    <a href="/services/plumbing" class="service-link">Learn More →</a>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">⚡</div>
-                    <h3 class="service-title">Electrical</h3>
-                    <p class="service-description">Licensed electricians for all your electrical needs, from simple repairs to complex installations.</p>
-                    <a href="/services/electricity" class="service-link">Learn More →</a>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🎨</div>
-                    <h3 class="service-title">Interior Design</h3>
-                    <p class="service-description">Transform your space with our professional interior design consultation and implementation services.</p>
-                    <a href="/services/interior-design" class="service-link">Learn More →</a>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🌿</div>
-                    <h3 class="service-title">Gardening</h3>
-                    <p class="service-description">Complete garden maintenance, landscaping, and plant care services for your outdoor spaces.</p>
-                    <a href="/services/gardening" class="service-link">Learn More →</a>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">❄️</div>
-                    <h3 class="service-title">Air Conditioning</h3>
-                    <p class="service-description">AC installation, repair, and maintenance services to keep your space comfortable year-round.</p>
-                    <a href="/services/air-conditioner" class="service-link">Learn More →</a>
-                </div>
-            </div>
+  <!-- Popular Services Section -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-subtitle">WHAT WE OFFER</div>
+        <h2 class="section-title">Our Most Popular Services</h2>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">🏠</div>
+          <h3 class="service-title">Housekeeping</h3>
+          <p class="service-description">Professional cleaning services for your home. Regular maintenance and deep cleaning options available.</p>
+          <a href="{% url 'services:services_field' 'Housekeeping' %}" class="service-link">Learn More →</a>
         </div>
-    </section>
-
-    <!-- Process Section -->
-    <section class="process">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-subtitle">HOW IT WORKS</div>
-                <h2 class="section-title">Our Simple 3-Step Process</h2>
-            </div>
-            <div class="process-steps">
-                <div class="process-step">
-                    <div class="step-number">1</div>
-                    <h3 class="step-title">Browse Services</h3>
-                    <p class="step-description">Explore our wide range of professional services and find exactly what you need for your project.</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-number">2</div>
-                    <h3 class="step-title">Book & Schedule</h3>
-                    <p class="step-description">Select your preferred service, set your schedule, and provide the necessary details for your project.</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-number">3</div>
-                    <h3 class="step-title">Get It Done</h3>
-                    <p class="step-description">Our verified professionals will complete your service efficiently and to your satisfaction.</p>
-                </div>
-            </div>
+        <div class="service-card">
+          <div class="service-icon">🔧</div>
+          <h3 class="service-title">Plumbing</h3>
+          <p class="service-description">Expert plumbing solutions for repairs, installations, and emergency services available 24/7.</p>
+          <a href="{% url 'services:services_field' 'Plumbing' %}" class="service-link">Learn More →</a>
         </div>
-    </section>
+        <div class="service-card">
+          <div class="service-icon">⚡</div>
+          <h3 class="service-title">Electricity</h3>
+          <p class="service-description">Licensed electricians for all your electrical needs, from simple repairs to complex installations.</p>
+          <a href="{% url 'services:services_field' 'Electricity' %}" class="service-link">Learn More →</a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🎨</div>
+          <h3 class="service-title">Interior Design</h3>
+          <p class="service-description">Transform your space with our professional interior design consultation and implementation services.</p>
+          <a href="{% url 'services:services_field' 'Interior Design' %}" class="service-link">Learn More →</a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🌿</div>
+          <h3 class="service-title">Gardening</h3>
+          <p class="service-description">Complete garden maintenance, landscaping, and plant care services for your outdoor spaces.</p>
+          <a href="{% url 'services:services_field' 'Gardening' %}" class="service-link">Learn More →</a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">❄️</div>
+          <h3 class="service-title">Air Conditioner</h3>
+          <p class="service-description">AC installation, repair, and maintenance services to keep your space comfortable year-round.</p>
+          <a href="{% url 'services:services_field' 'Air Conditioner' %}" class="service-link">Learn More →</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Process Section -->
+  <section class="process">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-subtitle">HOW IT WORKS</div>
+        <h2 class="section-title">Our Simple 3-Step Process</h2>
+      </div>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Browse Services</h3>
+          <p class="step-description">Explore our wide range of professional services and find exactly what you need for your project.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Book & Schedule</h3>
+          <p class="step-description">Select your preferred service, set your schedule, and provide the necessary details for your project.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Get It Done</h3>
+          <p class="step-description">Our verified professionals will complete your service efficiently and to your satisfaction.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-subtitle">ABOUT US</div>
+        <h2 class="section-title">Who We Are</h2>
+      </div>
+      <p>NetFix is your one-stop platform for connecting with trusted service providers. We aim to make finding and booking professional services easy and reliable.</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-subtitle">GET IN TOUCH</div>
+        <h2 class="section-title">Contact Us</h2>
+      </div>
+      <p>Email: support@netfix.com</p>
+      <p>Phone: (123) 456-7890</p>
+    </div>
+  </section>
 {% endblock %}
