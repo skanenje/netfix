@@ -23,17 +23,17 @@
                     <div class="info-label">Service Name</div>
                     <div class="info-value">{{ service.name }}</div>
                 </div>
-                
+
                 <div class="info-item">
                     <div class="info-label">Price per Hour</div>
                     <div class="info-value price-highlight">KES{{ service.price_per_hour }}</div>
                 </div>
-                
+
                 <div class="info-item">
                     <div class="info-label">Category</div>
                     <div class="info-value">{{ service.field }}</div>
                 </div>
-                
+
                 <div class="info-item">
                     <div class="info-label">Service Provider</div>
                     <div class="info-value">
@@ -42,12 +42,12 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="info-item">
                     <div class="info-label">Created Date</div>
                     <div class="info-value">{{ service.created_date|date:"F d, Y" }}</div>
                 </div>
-                
+
                 <div class="info-item full-width">
                     <div class="info-label">Description</div>
                     <div class="info-value description-text">{{ service.description|linebreaks }}</div>
@@ -56,21 +56,24 @@
 
             <!-- Action Buttons -->
             {% if request.user.is_authenticated %}
-                {% if request.user.is_customer %}
-                    <button type="button" class="submit-btn" onclick="window.location.href='{% url 'services:request_service' service.id %}'">
-                        Request This Service
-                    </button>
-                {% endif %}
+            {% if request.user.is_customer %}
+            <a href="{% url 'services:request_service' service.id %}" class="submit-btn"
+                style="text-decoration: none; display: inline-block; text-align: center;"></a>
+            Request This Service
+            </a>
+            {% endif %}
             {% else %}
-                <button type="button" class="submit-btn" onclick="window.location.href='{% url 'users:login_user' %}'">
-                    Login to Request Service
-                </button>
+            <a href="{% url 'users:login_user' %}" class="submit-btn"
+                style="text-decoration: none; display: inline-block; text-align: center;"></a>
+            Login to Request Service
+            </a>
             {% endif %}
 
             <div class="login-link">
                 <a href="{% url 'services:services_list' %}">← Back to All Services</a>
                 {% if service.field %}
-                    | <a href="{% url 'services:services_field' service.field|lower|slugify %}">{{ service.field }} Services</a>
+                | <a href="{% url 'services:services_field' service.field|lower|slugify %}">{{ service.field }}
+                    Services</a>
                 {% endif %}
             </div>
         </div>
