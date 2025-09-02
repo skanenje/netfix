@@ -1,34 +1,189 @@
 {% extends 'main/base.html' %}
-{% block title %}
-    Request {{ service.name }}
-{% endblock %}
+{% load static %}
+
+{% block title %}Request {{ service.name }} - NetFix{% endblock %}
 
 {% block content %}
-<div class="content">
-    <h1>Request Service: {{ service.name }}</h1>
-    <p><strong>Field:</strong> {{ service.field }}</p>
-    <p><strong>Price per Hour:</strong> {{ service.price_per_hour }}€</p>
-    <p><strong>Provider:</strong> <a href="{% url 'users:company_profile' service.company.user.id %}">{{ service.company.user.username }}</a></p>
-    <p><strong>Description:</strong></p>
-    <pre>{{ service.description }}</pre>
+<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+<div class="registration-page">
+    <div class="register-container">
+        <div class="register-header">
+            <div class="logo">
+                <div class="logo-icon">📋</div>
+                <span>Service Request</span>
+            </div>
+            <h1 class="register-title">Request {{ service.name }}</h1>
+            <p class="register-subtitle">Fill out the details for your service request</p>
+        </div>
 
-    {% if form.errors %}
-        <div class="error-message show">
-            {{ form.errors }}
-        </div>
-    {% endif %}
+        <form class="register-form" method="post" id="requestForm" novalidate>
+            {% csrf_token %}
+            
+            <!-- Display general form errors -->
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
 
-    <form method="post" class="register-form">
-        {% csrf_token %}
-        <div class="form-group">
-            <label>Address</label>
-            {{ form.address }}
-        </div>
-        <div class="form-group">
-            <label>Hours Needed</label>
-            {{ form.hours_requested }}
-        </div>
-        <button type="submit" class="submit-btn">Request Service</button>
-    </form>
+            <!-- Service Information Section -->
+            <div class="service-info-section">
+                <h3 class="section-title">Service Details</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Service Name</div>
+                        <div class="info-value">{{ service.name }}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Price per Hour</div>
+                        <div class="info-value price-highlight">€{{ service.price_per_hour }}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Category</div>
+                        <div class="info-value">{{ service.field }}</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Service Provider</div>
+                        <div class="info-value">
+                            <a href="{% url 'users:company_profile' service.company.user.id %}" class="provider-link">
+                                {{ service.company.user.username }}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item full-width">
+                        <div class="info-label">Service Description</div>
+                        <div class="info-value description-text">{{ service.description|linebreaks }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Request Form Section -->
+            <div class="request-form-section">
+                <h3 class="section-title">Request Information</h3>
+                <div class="form-fields">
+                    <div class="form-group">
+                        <label for="{{ form.address.id_for_label }}">Service Address</label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                            <div class="error-message">{{ form.address.errors.0 }}</div>
+                        {% endif %}
+                        <div class="field-help">Please provide the complete address where the service is needed</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.hours_requested.id_for_label }}">Hours Needed</label>
+                        {{ form.hours_requested }}
+                        {% if form.hours_requested.errors %}
+                            <div class="error-message">{{ form.hours_requested.errors.0 }}</div>
+                        {% endif %}
+                        <div class="field-help">Estimated number of hours required for the service</div>
+                    </div>
+
+                    <!-- Cost Calculation Display -->
+                    <div class="cost-calculation">
+                        <div class="cost-item">
+                            <span class="cost-label">Estimated Cost:</span>
+                            <span class="cost-value" id="estimatedCost">€0.00</span>
+                        </div>
+                        <div class="cost-note">
+                            <small>* Final cost may vary based on actual work completed</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Service Request</button>
+
+            <div class="login-link">
+                <a href="{% url 'services:service_detail' service.id %}">← Back to Service Details</a>
+                | <a href="{% url 'services:services_list' %}">All Services</a>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('requestForm');
+        const hoursInput = document.querySelector('input[name="hours_requested"]');
+        const estimatedCostElement = document.getElementById('estimatedCost');
+        const pricePerHour = {{ service.price_per_hour }};
+        
+        // Calculate estimated cost
+        function updateEstimatedCost() {
+            const hours = parseFloat(hoursInput.value) || 0;
+            const totalCost = hours * pricePerHour;
+            estimatedCostElement.textContent = '€' + totalCost.toFixed(2);
+        }
+        
+        // Update cost when hours change
+        if (hoursInput) {
+            hoursInput.addEventListener('input', updateEstimatedCost);
+            hoursInput.addEventListener('change', updateEstimatedCost);
+            updateEstimatedCost(); // Initial calculation
+        }
+        
+        if (form) {
+            // Add client-side validation
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                // Clear previous errors
+                document.querySelectorAll('.error-message').forEach(el => {
+                    if (!el.textContent.trim()) {
+                        el.style.display = 'none';
+                    }
+                });
+                document.querySelectorAll('input, textarea').forEach(el => {
+                    el.classList.remove('error');
+                });
+                
+                // Validate required fields
+                const addressField = document.querySelector('textarea[name="address"]');
+                const hoursField = document.querySelector('input[name="hours_requested"]');
+                
+                if (addressField && !addressField.value.trim()) {
+                    showFieldError(addressField, 'Service address is required');
+                    isValid = false;
+                }
+                
+                if (hoursField) {
+                    const hours = parseFloat(hoursField.value);
+                    if (!hoursField.value.trim()) {
+                        showFieldError(hoursField, 'Hours needed is required');
+                        isValid = false;
+                    } else if (isNaN(hours) || hours <= 0) {
+                        showFieldError(hoursField, 'Hours must be a positive number');
+                        isValid = false;
+                    } else if (hours > 24) {
+                        showFieldError(hoursField, 'Maximum 24 hours per request');
+                        isValid = false;
+                    }
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        }
+        
+        function showFieldError(field, message) {
+            field.classList.add('error');
+            
+            let errorElement = field.parentNode.querySelector('.error-message');
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.className = 'error-message';
+                field.parentNode.appendChild(errorElement);
+            }
+            
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+    });
+</script>
 {% endblock %}

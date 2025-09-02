@@ -570,4 +570,147 @@ Modal Information Display Styles */
     .no-services-icon {
         font-size: 2rem;
     }
+}/* 
+Request Service Page Styles */
+
+.service-info-section,
+.request-form-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    color: #2c3e50;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #4CAF50;
+    text-align: left;
+}
+
+.service-info-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.request-form-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+}
+
+/* Field Help Text */
+.field-help {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* Cost Calculation */
+.cost-calculation {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.cost-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.cost-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.cost-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    min-width: 100px;
+    text-align: center;
+}
+
+.cost-note {
+    opacity: 0.9;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.cost-note small {
+    font-style: italic;
+}
+
+/* Enhanced form styling for request page */
+.register-form textarea {
+    min-height: 80px !important;
+    resize: vertical !important;
+}
+
+.register-form input[type="number"] {
+    text-align: center;
+}
+
+/* Request form specific button styling */
+.request-form-section .submit-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    margin-top: 1rem;
+}
+
+/* Responsive adjustments for request page */
+@media (max-width: 768px) {
+    .service-info-section,
+    .request-form-section {
+        padding: 1rem;
+    }
+    
+    .cost-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .cost-value {
+        min-width: auto;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-title {
+        font-size: 1.1rem;
+    }
+    
+    .cost-calculation {
+        padding: 1rem;
+    }
+    
+    .cost-label {
+        font-size: 1rem;
+    }
+    
+    .cost-value {
+        font-size: 1.3rem;
+    }
+}
+
+/* Animation for cost updates */
+.cost-value {
+    transition: all 0.3s ease;
+}
+
+.cost-value.updating {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.3);
 }
