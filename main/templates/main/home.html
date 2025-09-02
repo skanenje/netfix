@@ -26,7 +26,6 @@
           {% if request.user.is_authenticated %}
             <a href="{% url 'services:services_list' %}" class="btn-primary">Browse Services</a>
             <a href="{% url 'users:profile' %}" class="btn-secondary">My Profile</a>
-            <button class="btn-accent" onclick="openQuickActionModal()">Quick Actions</button>
           {% else %}
             <a href="{% url 'users:register' %}" class="btn-primary">Get Started</a>
             <a href="{% url 'services:services_list' %}" class="btn-secondary">Browse Services</a>
@@ -57,48 +56,48 @@
       <p class="section-description">Choose from our wide range of professional services</p>
     </div>
     <div class="services-grid">
-      <div class="service-card" onclick="openServiceModal('housekeeping')">
+      <a href="{% url 'services:services_field' 'housekeeping' %}" class="service-card">
         <div class="service-icon">🏠</div>
         <h3 class="service-title">Housekeeping</h3>
         <p class="service-description">Professional cleaning services for your home</p>
         <div class="service-price">Starting at €25/hour</div>
         <div class="service-rating">⭐ 4.8 (120+ reviews)</div>
-      </div>
-      <div class="service-card" onclick="openServiceModal('plumbing')">
+      </a>
+      <a href="{% url 'services:services_field' 'plumbing' %}" class="service-card">
         <div class="service-icon">🔧</div>
         <h3 class="service-title">Plumbing</h3>
         <p class="service-description">Expert plumbing solutions and repairs</p>
         <div class="service-price">Starting at €45/hour</div>
         <div class="service-rating">⭐ 4.9 (85+ reviews)</div>
-      </div>
-      <div class="service-card" onclick="openServiceModal('electricity')">
+      </a>
+      <a href="{% url 'services:services_field' 'electricity' %}" class="service-card">
         <div class="service-icon">⚡</div>
         <h3 class="service-title">Electricity</h3>
         <p class="service-description">Licensed electricians for all needs</p>
         <div class="service-price">Starting at €50/hour</div>
         <div class="service-rating">⭐ 4.7 (95+ reviews)</div>
-      </div>
-      <div class="service-card" onclick="openServiceModal('interior-design')">
+      </a>
+      <a href="{% url 'services:services_field' 'interior-design' %}" class="service-card">
         <div class="service-icon">🎨</div>
         <h3 class="service-title">Interior Design</h3>
         <p class="service-description">Transform your space professionally</p>
         <div class="service-price">Starting at €75/hour</div>
         <div class="service-rating">⭐ 4.9 (65+ reviews)</div>
-      </div>
-      <div class="service-card" onclick="openServiceModal('gardening')">
+      </a>
+      <a href="{% url 'services:services_field' 'gardening' %}" class="service-card">
         <div class="service-icon">🌿</div>
         <h3 class="service-title">Gardening</h3>
         <p class="service-description">Complete garden maintenance services</p>
         <div class="service-price">Starting at €30/hour</div>
         <div class="service-rating">⭐ 4.6 (110+ reviews)</div>
-      </div>
-      <div class="service-card" onclick="openServiceModal('air-conditioner')">
+      </a>
+      <a href="{% url 'services:services_field' 'air-conditioner' %}" class="service-card">
         <div class="service-icon">❄️</div>
         <h3 class="service-title">Air Conditioner</h3>
         <p class="service-description">AC installation and maintenance</p>
         <div class="service-price">Starting at €55/hour</div>
         <div class="service-rating">⭐ 4.8 (75+ reviews)</div>
-      </div>
+      </a>
     </div>
   </div>
 </section>

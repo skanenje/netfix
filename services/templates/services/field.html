@@ -1,41 +1,54 @@
 {% extends 'main/base.html' %}
 
-{% block title %}
-    {{ field }} Services List
-{% endblock %}
+{% block title %}{{ field }} Services - NetFix{% endblock %}
 
 {% block content %}
+<div class="content">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="field-header">
+        <h1 class="title">{{ field }} Services</h1>
+        <a href="{% url 'services:services_list' %}" class="btn-secondary">← All Services</a>
+    </div>
+
     {% if services %}
-        <div class="content">
-            <p class="title">{{ field }} Services</p>
-            <ul class="services_list">
-                {% for service in services %}
-                    <li style="margin-bottom: 30px;">
-                        <div class="service_list_info">
-                            <a href="{% url 'service_detail' service.id %}" style="font-weight: bold; font-size: 1.2em;">
+        <ul class="services_list">
+            {% for service in services %}
+                <li class="service_list_info">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <a href="{% url 'services:service_detail' service.id %}" class="service-link">
                                 {{ service.name }}
-                            </a> — 
-                            <span>{{ service.price_per_hour }}€/hour</span>
-                            <pre>{{ service.description }}</pre>
-                        </div>
-                        <p style="text-align: right; font-size: small; margin: 5px 0;">
-                            by 
-                            <a href="{% url 'company_profile' service.company.user.id %}">
-                                {{ service.company.user.username }}
                             </a>
+                            <span style="font-weight: bold; color: #4CAF50;">
+                                — {{ service.price_per_hour }}€/hour
+                            </span>
+                            <pre style="margin-top: 10px;">{{ service.description }}</pre>
+                        </div>
+                        <p style="text-align: right; margin: 0; font-size: small;">
+                            by <a href="{% url 'users:company_profile' service.company.user.id %}">{{ service.company.user.username }}</a>
                         </p>
-                        {% if not forloop.last %}
-                            <div class="line"></div>
-                        {% endif %}
-                    </li>
-                {% empty %}
-                    <h2>Sorry, no {{ field }} services available.</h2>
-                {% endfor %}
-            </ul>
-        </div>
+                    </div>
+                    {% if not forloop.last %}
+                        <div class="line"></div>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <div class="no-services">
+                    <h2>No {{ field }} services available yet</h2>
+                    <p>Check back later or browse other service categories.</p>
+                </div>
+            {% endfor %}
+        </ul>
     {% else %}
-        <div class="content">
-            <h2>Sorry, no {{ field }} services available.</h2>
+        <div class="no-services">
+            <h2>No {{ field }} services available yet</h2>
+            <p>Check back later or browse other service categories.</p>
         </div>
     {% endif %}
+</div>
 {% endblock %}

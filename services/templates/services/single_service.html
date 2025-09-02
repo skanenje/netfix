@@ -1,25 +1,59 @@
 {% extends 'main/base.html' %}
-{% block title %}
-    {{ service.name }}
-{% endblock %}
+{% block title %}{{ service.name }} - NetFix{% endblock %}
 
 {% block content %}
 <div class="content">
-    <div class="service_info_header">
-        <h1>{{ service.name }} — {{ service.price_per_hour }}€/hour</h1>
-        <h5>by <a href="{% url 'company_profile' service.company.user.id %}">{{ service.company.user.username }}</a></h5>
+    <div class="service-detail-container">
+        <div class="service-header">
+            <h1 class="service-name">{{ service.name }}</h1>
+            <div class="service-price">€{{ service.price_per_hour }}/hour</div>
+        </div>
+        
+        <div class="service-meta">
+            <div class="service-provider">
+                <span class="provider-label">Service Provider:</span>
+                <a href="{% url 'users:company_profile' service.company.user.id %}" class="provider-link">
+                    {{ service.company.user.username }}
+                </a>
+            </div>
+            <div class="service-category">
+                <span class="category-label">Category:</span>
+                <span class="category-value">{{ service.field }}</span>
+            </div>
+        </div>
+
+        <div class="service-description">
+            <h3>Description</h3>
+            <p>{{ service.description|linebreaks }}</p>
+        </div>
+
+        {% if request.user.is_authenticated %}
+            {% if request.user.is_customer %}
+                <div class="service-actions">
+                    <a href="{% url 'services:request_service' service.id %}" class="btn-primary">
+                        Request This Service
+                    </a>
+                    <a href="{% url 'services:services_list' %}" class="btn-secondary">
+                        Back to Services
+                    </a>
+                </div>
+            {% else %}
+                <div class="service-actions">
+                    <a href="{% url 'services:services_list' %}" class="btn-secondary">
+                        Back to Services
+                    </a>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="service-actions">
+                <a href="{% url 'users:login_user' %}" class="btn-primary">
+                    Login to Request Service
+                </a>
+                <a href="{% url 'services:services_list' %}" class="btn-secondary">
+                    Back to Services
+                </a>
+            </div>
+        {% endif %}
     </div>
-
-    <h3 style="margin-top: 20px; color: #ec2f00;">Field: {{ service.field }}</h3>
-
-    <p style="margin-top: 20px; text-align: left; white-space: pre-line;">
-        {{ service.description }}
-    </p>
-
-    {% if request.user.is_customer %}
-        <a href="{% url 'request_service' service.id %}" class="like_button" style="display: inline-block; margin-top: 30px;">
-            Request Service
-        </a>
-    {% endif %}
 </div>
 {% endblock %}
