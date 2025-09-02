@@ -7,15 +7,29 @@
     <div class="container">
       <div class="hero-content">
         <div class="hero-text">
-          <div class="hero-subtitle">WELCOME TO NETFIX</div>
-          <h1 class="hero-title">Professional Services at Your Fingertips</h1>
-          <p class="hero-description">
-            Connect with trusted professionals for all your service needs. From home repairs to specialized services, 
-            we've got you covered with our comprehensive platform.
-          </p>
+          {% if request.user.is_authenticated %}
+            <div class="hero-subtitle">WELCOME BACK{% if request.user.username %}, {{ request.user.username|upper }}{% endif %}</div>
+            <h1 class="hero-title">Ready to Find Your Next Service?</h1>
+            <p class="hero-description">
+              Browse our wide selection of professional services or check your profile to manage your bookings. 
+              Our trusted professionals are ready to help with your next project.
+            </p>
+          {% else %}
+            <div class="hero-subtitle">WELCOME TO NETFIX</div>
+            <h1 class="hero-title">Professional Services at Your Fingertips</h1>
+            <p class="hero-description">
+              Connect with trusted professionals for all your service needs. From home repairs to specialized services, 
+              we've got you covered with our comprehensive platform.
+            </p>
+          {% endif %}
           <div class="hero-buttons">
-            <a href="{% url 'users:register' %}" class="btn-primary">Get Started</a>
-            <a href="{% url 'services:services_list' %}" class="btn-secondary">Browse Services</a>
+            {% if request.user.is_authenticated %}
+              <a href="{% url 'services:services_list' %}" class="btn-primary">Browse Services</a>
+              <a href="{% url 'users:profile' %}" class="btn-secondary">My Profile</a>
+            {% else %}
+              <a href="{% url 'users:register' %}" class="btn-primary">Get Started</a>
+              <a href="{% url 'services:services_list' %}" class="btn-secondary">Browse Services</a>
+            {% endif %}
           </div>
         </div>
         <div class="hero-visual">
@@ -85,25 +99,48 @@
   <section class="process">
     <div class="container">
       <div class="section-header">
-        <div class="section-subtitle">HOW IT WORKS</div>
-        <h2 class="section-title">Our Simple 3-Step Process</h2>
+        {% if request.user.is_authenticated %}
+          <div class="section-subtitle">QUICK ACCESS</div>
+          <h2 class="section-title">What Would You Like to Do?</h2>
+        {% else %}
+          <div class="section-subtitle">HOW IT WORKS</div>
+          <h2 class="section-title">Our Simple 3-Step Process</h2>
+        {% endif %}
       </div>
       <div class="process-steps">
-        <div class="process-step">
-          <div class="step-number">1</div>
-          <h3 class="step-title">Browse Services</h3>
-          <p class="step-description">Explore our wide range of professional services and find exactly what you need for your project.</p>
-        </div>
-        <div class="process-step">
-          <div class="step-number">2</div>
-          <h3 class="step-title">Book & Schedule</h3>
-          <p class="step-description">Select your preferred service, set your schedule, and provide the necessary details for your project.</p>
-        </div>
-        <div class="process-step">
-          <div class="step-number">3</div>
-          <h3 class="step-title">Get It Done</h3>
-          <p class="step-description">Our verified professionals will complete your service efficiently and to your satisfaction.</p>
-        </div>
+        {% if request.user.is_authenticated %}
+          <div class="process-step">
+            <div class="step-number">🔍</div>
+            <h3 class="step-title">Find Services</h3>
+            <p class="step-description">Browse our catalog of professional services and find the perfect match for your needs.</p>
+          </div>
+          <div class="process-step">
+            <div class="step-number">📋</div>
+            <h3 class="step-title">Manage Bookings</h3>
+            <p class="step-description">View your profile to track current bookings, service history, and manage your account.</p>
+          </div>
+          <div class="process-step">
+            <div class="step-number">⭐</div>
+            <h3 class="step-title">Rate & Review</h3>
+            <p class="step-description">Share your experience and help other users find the best service providers.</p>
+          </div>
+        {% else %}
+          <div class="process-step">
+            <div class="step-number">1</div>
+            <h3 class="step-title">Browse Services</h3>
+            <p class="step-description">Explore our wide range of professional services and find exactly what you need for your project.</p>
+          </div>
+          <div class="process-step">
+            <div class="step-number">2</div>
+            <h3 class="step-title">Book & Schedule</h3>
+            <p class="step-description">Select your preferred service, set your schedule, and provide the necessary details for your project.</p>
+          </div>
+          <div class="process-step">
+            <div class="step-number">3</div>
+            <h3 class="step-title">Get It Done</h3>
+            <p class="step-description">Our verified professionals will complete your service efficiently and to your satisfaction.</p>
+          </div>
+        {% endif %}
       </div>
     </div>
   </section>

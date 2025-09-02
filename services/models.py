@@ -32,12 +32,16 @@ class RequestedService(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='requested_services')
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     address = models.TextField()
-    hours_needed = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    requested_date = models.DateTimeField(auto_now_add=True)
+    hours_requested = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    date_requested = models.DateTimeField(auto_now_add=True)
 
     @property
     def calculated_cost(self):
-        return self.service.price_per_hour * self.hours_needed
+        return self.service.price_per_hour * self.hours_requested
+
+    @property
+    def requested_date(self):
+        return self.date_requested
 
     def __str__(self):
         return f"{self.service.name} for {self.customer.user.username}"

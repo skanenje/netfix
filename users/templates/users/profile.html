@@ -5,56 +5,64 @@
 
 {% block content %}
 <div class="content">
-    {% if error %}
-        <p>{{ error }}</p>
-    {% else %}
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <div>
-                <h2>{{ user.username }}{% if user.is_customer %} ({{ user_age }} y/o){% endif %}</h2>
-                <p>{{ user.email }}</p>
-                {% if user.is_company %}
-                    <p>Field of Work: {{ company.field }}</p>
-                {% endif %}
-            </div>
-            <span class="badge">
-                {% if user.is_customer %}
-                    Customer
-                {% else %}
-                    {{ company.field }} Company
-                {% endif %}
-            </span>
+    <div class="profile-header">
+        <div class="profile-info">
+            <h2>{{ user.username }}{% if user.is_customer and user_age %} ({{ user_age }} y/o){% endif %}</h2>
+            <p>{{ user.email }}</p>
+            {% if user.is_company and company %}
+                <p>Field of Work: {{ company.field }}</p>
+            {% endif %}
         </div>
+        <span class="badge">
+            {% if user.is_customer %}
+                Customer
+            {% elif user.is_company and company %}
+                {{ company.field }} Company
+            {% else %}
+                User
+            {% endif %}
+        </span>
+    </div>
 
-        {% if user.is_customer %}
-            <p class="title">Previous Requested Services</p>
-            {% for req in services %}
-                <div class="service_list_info">
-                    <a href="{% url 'service_detail' req.service.id %}">
-                        {{ req.service.name }}
-                    </a> ({{ req.service.field }})
-                    <p style="margin: 0; display: inline-block;">❱❱ {{ req.calculated_cost }}</p>
-                    <p style="margin: 0; display: inline-block;">❱❱ {{ req.requested_date }}</p>
-                    <p style="float: right; margin: 0;">
-                        by <a href="{% url 'company_profile' req.service.company.user.id %}">
-                            {{ req.service.company.user.username }}
-                        </a>
-                    </p>
-                </div>
-                <div class="line"></div>
-            {% empty %}
+    {% if error %}
+        <div class="profile-error">
+            <strong>Profile Issue:</strong> {{ error }}
+        </div>
+    {% endif %}
+
+    {% if user.is_customer %}
+        <p class="title">Previous Requested Services</p>
+        {% for req in services %}
+            <div class="service_list_info">
+                <a href="{% url 'services:service_detail' req.service.id %}">
+                    {{ req.service.name }}
+                </a> ({{ req.service.field }})
+                <p style="margin: 0; display: inline-block;">❱❱ {{ req.calculated_cost }}</p>
+                <p style="margin: 0; display: inline-block;">❱❱ {{ req.requested_date }}</p>
+                <p style="float: right; margin: 0;">
+                    by <a href="{% url 'users:company_profile' req.service.company.user.id %}">
+                        {{ req.service.company.user.username }}
+                    </a>
+                </p>
+            </div>
+        {% empty %}
+            <div style="text-align: center; padding: 2rem; color: #666;">
                 <p>No requested services yet.</p>
-            {% endfor %}
-        {% else %}
-            <p class="title">Available Services</p>
-            {% for service in services %}
-                <div class="list_services_profile">
-                    <a href="{% url 'service_detail' service.id %}">{{ service.name }}</a> — {{ service.price_per_hour }}€/hour
-                    <div class="line"></div>
-                </div>
-            {% empty %}
+                <a href="{% url 'services:services_list' %}" class="btn-primary" style="display: inline-block; margin-top: 1rem;">Browse Services</a>
+            </div>
+        {% endfor %}
+    {% elif user.is_company %}
+        <p class="title">Available Services</p>
+        {% for service in services %}
+            <div class="list_services_profile">
+                <a href="{% url 'services:service_detail' service.id %}">{{ service.name }}</a> — {{ service.price_per_hour }}€/hour
+            </div>
+        {% empty %}
+            <div style="text-align: center; padding: 2rem; color: #666;">
                 <p>No services provided yet.</p>
-            {% endfor %}
-        {% endif %}
+                <a href="{% url 'services:services_create' %}" class="btn-primary" style="display: inline-block; margin-top: 1rem;">Create Service</a>
+            </div>
+        {% endfor %}
     {% endif %}
 </div>
 {% endblock %}

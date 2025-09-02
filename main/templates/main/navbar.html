@@ -11,10 +11,10 @@
         <li><a href="#contact">Contact</a></li>
         {% if request.user.is_authenticated %}
           <li><a href="{% url 'users:profile' %}">Profile</a></li>
-          <li>
-            <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+          <li class="logout-item">
+            <form method="post" action="{% url 'users:logout' %}" style="display: inline; margin: 0; padding: 0;">
               {% csrf_token %}
-              <button type="submit" class="cta-button" style="background: none; border: none; color: inherit; font: inherit; cursor: pointer; text-decoration: none;">Logout</button>
+              <button type="submit" class="logout-button" style="background: #4CAF50 !important; color: white !important;">Logout</button>
             </form>
           </li>
         {% else %}

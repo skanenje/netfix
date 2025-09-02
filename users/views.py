@@ -60,39 +60,52 @@ def LoginUserView(request):
 @login_required
 def profile_view(request):
     user = request.user
-    try:
-        if user.is_customer:
-            try:
-                customer = user.customer_profile
-                services = RequestedService.objects.filter(customer=customer).order_by('-requested_date')
-                user_age = (timezone.now().date() - customer.date_of_birth).days // 365
-                return render(request, 'users/profile.html', {
-                    'user': user,
-                    'customer': customer,
-                    'services': services,
-                    'user_age': user_age
-                })
-            except Customer.DoesNotExist:
-                messages.error(request, 'Customer profile not found.')
-                return render(request, 'users/profile.html', {'error': 'Customer profile not found'})
-        elif user.is_company:
-            try:
-                company = user.company_profile
-                services = company.services.all().order_by('-created_date')
-                return render(request, 'users/profile.html', {
-                    'user': user,
-                    'company': company,
-                    'services': services
-                })
-            except Company.DoesNotExist:
-                messages.error(request, 'Company profile not found.')
-                return render(request, 'users/profile.html', {'error': 'Company profile not found'})
-        else:
-            messages.error(request, 'Invalid user type.')
-            return redirect('main:home')
-    except Exception as e:
-        messages.error(request, 'Unable to load profile. Please try again.')
-        return redirect('main:home')
+    
+    # Handle customer profile
+    if user.is_customer:
+        try:
+            customer = user.customer_profile
+            services = RequestedService.objects.filter(customer=customer).order_by('-date_requested')
+            user_age = (timezone.now().date() - customer.date_of_birth).days // 365
+            return render(request, 'users/profile.html', {
+                'user': user,
+                'customer': customer,
+                'services': services,
+                'user_age': user_age
+            })
+        except Customer.DoesNotExist:
+            # Create a basic profile page for users without customer profile
+            return render(request, 'users/profile.html', {
+                'user': user,
+                'error': 'Customer profile incomplete. Please contact support.',
+                'services': []
+            })
+    
+    # Handle company profile
+    elif user.is_company:
+        try:
+            company = user.company_profile
+            services = company.services.all().order_by('-created_date')
+            return render(request, 'users/profile.html', {
+                'user': user,
+                'company': company,
+                'services': services
+            })
+        except Company.DoesNotExist:
+            # Create a basic profile page for users without company profile
+            return render(request, 'users/profile.html', {
+                'user': user,
+                'error': 'Company profile incomplete. Please contact support.',
+                'services': []
+            })
+    
+    # Handle users without proper type flags
+    else:
+        return render(request, 'users/profile.html', {
+            'user': user,
+            'error': 'Profile type not set. Please contact support.',
+            'services': []
+        })
 
 def company_profile(request, user_id):
     try:

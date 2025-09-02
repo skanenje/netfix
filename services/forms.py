@@ -34,9 +34,9 @@ class ServiceForm(forms.ModelForm):
 class RequestServiceForm(forms.ModelForm):
     class Meta:
         model = RequestedService
-        fields = ['address', 'hours_needed']
+        fields = ['address', 'hours_requested']
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['address'].widget = forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter full address where service is needed'})
-        self.fields['hours_needed'].widget.attrs['placeholder'] = 'Enter hours needed'
+        self.fields['hours_requested'].widget.attrs['placeholder'] = 'Enter hours needed'
