@@ -1425,7 +1425,7 @@ a.service-card .service-price {
 a.service-card .service-rating {
     color: #666;
     font-size: 0.9rem;
-}/
+}
 * Service Card Content Styles */
 .service-price {
     color: #4CAF50;
@@ -1593,7 +1593,7 @@ vice Detail Page Styles */
     .service-price {
         font-size: 1.25rem;
     }
-}/
+}
 * Field Services Page Styles */
 .field-header {
     display: flex;

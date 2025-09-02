@@ -111,7 +111,7 @@
         const form = document.getElementById('requestForm');
         const hoursInput = document.querySelector('input[name="hours_requested"]');
         const estimatedCostElement = document.getElementById('estimatedCost');
-        const pricePerHour = {{ service.price_per_hour }};
+        const pricePerHour = parseFloat('{{ service.price_per_hour }}');
         
         // Calculate estimated cost
         function updateEstimatedCost() {
