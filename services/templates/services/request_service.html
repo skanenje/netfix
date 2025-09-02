@@ -37,7 +37,7 @@
 
                     <div class="info-item">
                         <div class="info-label">Price per Hour</div>
-                        <div class="info-value price-highlight">€{{ service.price_per_hour }}</div>
+                        <div class="info-value price-highlight">KES{{ service.price_per_hour }}</div>
                     </div>
 
                     <div class="info-item">
@@ -87,7 +87,7 @@
                     <div class="cost-calculation">
                         <div class="cost-item">
                             <span class="cost-label">Estimated Cost:</span>
-                            <span class="cost-value" id="estimatedCost">€0.00</span>
+                            <span class="cost-value" id="estimatedCost">KES 0.00</span>
                         </div>
                         <div class="cost-note">
                             <small>* Final cost may vary based on actual work completed</small>
@@ -117,7 +117,7 @@
         function updateEstimatedCost() {
             const hours = parseFloat(hoursInput.value) || 0;
             const totalCost = hours * pricePerHour;
-            estimatedCostElement.textContent = '€' + totalCost.toFixed(2);
+            estimatedCostElement.textContent = 'KES    ' + totalCost.toFixed(2);
         }
 
         // Update cost when hours change
