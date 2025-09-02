@@ -2,169 +2,177 @@
 {% block title %}NetFix{% endblock %}
 
 {% block content %}
-  <!-- Hero Section -->
-  <section class="hero" id="home">
-    <div class="container">
-      <div class="hero-content">
-        <div class="hero-text">
+<!-- Hero Section -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-text">
+        {% if request.user.is_authenticated %}
+          <div class="hero-subtitle">WELCOME BACK{% if request.user.username %}, {{ request.user.username|upper }}{% endif %}</div>
+          <h1 class="hero-title">Ready to Find Your Next Service?</h1>
+          <p class="hero-description">
+            Browse our wide selection of professional services or check your profile to manage your bookings.
+            Our trusted professionals are ready to help with your next project.
+          </p>
+        {% else %}
+          <div class="hero-subtitle">WELCOME TO NETFIX</div>
+          <h1 class="hero-title">Professional Services at Your Fingertips</h1>
+          <p class="hero-description">
+            Connect with trusted professionals for all your service needs. From home repairs to specialized services,
+            we've got you covered with our comprehensive platform.
+          </p>
+        {% endif %}
+        <div class="hero-buttons">
           {% if request.user.is_authenticated %}
-            <div class="hero-subtitle">WELCOME BACK{% if request.user.username %}, {{ request.user.username|upper }}{% endif %}</div>
-            <h1 class="hero-title">Ready to Find Your Next Service?</h1>
-            <p class="hero-description">
-              Browse our wide selection of professional services or check your profile to manage your bookings. 
-              Our trusted professionals are ready to help with your next project.
-            </p>
+            <a href="{% url 'services:services_list' %}" class="btn-primary">Browse Services</a>
+            <a href="{% url 'users:profile' %}" class="btn-secondary">My Profile</a>
+            <button class="btn-accent" onclick="openQuickActionModal()">Quick Actions</button>
           {% else %}
-            <div class="hero-subtitle">WELCOME TO NETFIX</div>
-            <h1 class="hero-title">Professional Services at Your Fingertips</h1>
-            <p class="hero-description">
-              Connect with trusted professionals for all your service needs. From home repairs to specialized services, 
-              we've got you covered with our comprehensive platform.
-            </p>
+            <a href="{% url 'users:register' %}" class="btn-primary">Get Started</a>
+            <a href="{% url 'services:services_list' %}" class="btn-secondary">Browse Services</a>
           {% endif %}
-          <div class="hero-buttons">
-            {% if request.user.is_authenticated %}
-              <a href="{% url 'services:services_list' %}" class="btn-primary">Browse Services</a>
-              <a href="{% url 'users:profile' %}" class="btn-secondary">My Profile</a>
-            {% else %}
-              <a href="{% url 'users:register' %}" class="btn-primary">Get Started</a>
-              <a href="{% url 'services:services_list' %}" class="btn-secondary">Browse Services</a>
-            {% endif %}
-          </div>
         </div>
-        <div class="hero-visual">
-          <div class="hero-image">
-            <div class="floating-bubbles">
-              <div class="bubble"></div>
-              <div class="bubble"></div>
-              <div class="bubble"></div>
-              <div class="bubble"></div>
-            </div>
-            <div style="font-size: 4rem; color: rgba(255,255,255,0.8);">🔧</div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-image">
+          <div class="floating-bubbles">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
           </div>
+          <div style="font-size: 4rem; color: rgba(255,255,255,0.8);">🔧</div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Popular Services Section -->
-  <section class="services" id="services">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-subtitle">WHAT WE OFFER</div>
-        <h2 class="section-title">Our Most Popular Services</h2>
+<!-- Popular Services Section -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-subtitle">WHAT WE OFFER</div>
+      <h2 class="section-title">Our Most Popular Services</h2>
+      <p class="section-description">Choose from our wide range of professional services</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card" onclick="openServiceModal('housekeeping')">
+        <div class="service-icon">🏠</div>
+        <h3 class="service-title">Housekeeping</h3>
+        <p class="service-description">Professional cleaning services for your home</p>
+        <div class="service-price">Starting at €25/hour</div>
+        <div class="service-rating">⭐ 4.8 (120+ reviews)</div>
       </div>
-      <div class="services-grid">
-        <div class="service-card">
-          <div class="service-icon">🏠</div>
-          <h3 class="service-title">Housekeeping</h3>
-          <p class="service-description">Professional cleaning services for your home. Regular maintenance and deep cleaning options available.</p>
-          <a href="{% url 'services:services_field' 'housekeeping' %}" class="service-link">Learn More →</a>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">🔧</div>
-          <h3 class="service-title">Plumbing</h3>
-          <p class="service-description">Expert plumbing solutions for repairs, installations, and emergency services available 24/7.</p>
-          <a href="{% url 'services:services_field' 'plumbing' %}" class="service-link">Learn More →</a>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">⚡</div>
-          <h3 class="service-title">Electricity</h3>
-          <p class="service-description">Licensed electricians for all your electrical needs, from simple repairs to complex installations.</p>
-          <a href="{% url 'services:services_field' 'electricity' %}" class="service-link">Learn More →</a>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">🎨</div>
-          <h3 class="service-title">Interior Design</h3>
-          <p class="service-description">Transform your space with our professional interior design consultation and implementation services.</p>
-          <a href="{% url 'services:services_field' 'interior-design' %}" class="service-link">Learn More →</a>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">🌿</div>
-          <h3 class="service-title">Gardening</h3>
-          <p class="service-description">Complete garden maintenance, landscaping, and plant care services for your outdoor spaces.</p>
-          <a href="{% url 'services:services_field' 'gardening' %}" class="service-link">Learn More →</a>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">❄️</div>
-          <h3 class="service-title">Air Conditioner</h3>
-          <p class="service-description">AC installation, repair, and maintenance services to keep your space comfortable year-round.</p>
-          <a href="{% url 'services:services_field' 'air-conditioner' %}" class="service-link">Learn More →</a>
-        </div>
+      <div class="service-card" onclick="openServiceModal('plumbing')">
+        <div class="service-icon">🔧</div>
+        <h3 class="service-title">Plumbing</h3>
+        <p class="service-description">Expert plumbing solutions and repairs</p>
+        <div class="service-price">Starting at €45/hour</div>
+        <div class="service-rating">⭐ 4.9 (85+ reviews)</div>
+      </div>
+      <div class="service-card" onclick="openServiceModal('electricity')">
+        <div class="service-icon">⚡</div>
+        <h3 class="service-title">Electricity</h3>
+        <p class="service-description">Licensed electricians for all needs</p>
+        <div class="service-price">Starting at €50/hour</div>
+        <div class="service-rating">⭐ 4.7 (95+ reviews)</div>
+      </div>
+      <div class="service-card" onclick="openServiceModal('interior-design')">
+        <div class="service-icon">🎨</div>
+        <h3 class="service-title">Interior Design</h3>
+        <p class="service-description">Transform your space professionally</p>
+        <div class="service-price">Starting at €75/hour</div>
+        <div class="service-rating">⭐ 4.9 (65+ reviews)</div>
+      </div>
+      <div class="service-card" onclick="openServiceModal('gardening')">
+        <div class="service-icon">🌿</div>
+        <h3 class="service-title">Gardening</h3>
+        <p class="service-description">Complete garden maintenance services</p>
+        <div class="service-price">Starting at €30/hour</div>
+        <div class="service-rating">⭐ 4.6 (110+ reviews)</div>
+      </div>
+      <div class="service-card" onclick="openServiceModal('air-conditioner')">
+        <div class="service-icon">❄️</div>
+        <h3 class="service-title">Air Conditioner</h3>
+        <p class="service-description">AC installation and maintenance</p>
+        <div class="service-price">Starting at €55/hour</div>
+        <div class="service-rating">⭐ 4.8 (75+ reviews)</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Process Section -->
-  <section class="process">
-    <div class="container">
-      <div class="section-header">
-        {% if request.user.is_authenticated %}
-          <div class="section-subtitle">QUICK ACCESS</div>
-          <h2 class="section-title">What Would You Like to Do?</h2>
-        {% else %}
-          <div class="section-subtitle">HOW IT WORKS</div>
-          <h2 class="section-title">Our Simple 3-Step Process</h2>
-        {% endif %}
-      </div>
-      <div class="process-steps">
-        {% if request.user.is_authenticated %}
-          <div class="process-step">
-            <div class="step-number">🔍</div>
-            <h3 class="step-title">Find Services</h3>
-            <p class="step-description">Browse our catalog of professional services and find the perfect match for your needs.</p>
-          </div>
-          <div class="process-step">
-            <div class="step-number">📋</div>
-            <h3 class="step-title">Manage Bookings</h3>
-            <p class="step-description">View your profile to track current bookings, service history, and manage your account.</p>
-          </div>
-          <div class="process-step">
-            <div class="step-number">⭐</div>
-            <h3 class="step-title">Rate & Review</h3>
-            <p class="step-description">Share your experience and help other users find the best service providers.</p>
-          </div>
-        {% else %}
-          <div class="process-step">
-            <div class="step-number">1</div>
-            <h3 class="step-title">Browse Services</h3>
-            <p class="step-description">Explore our wide range of professional services and find exactly what you need for your project.</p>
-          </div>
-          <div class="process-step">
-            <div class="step-number">2</div>
-            <h3 class="step-title">Book & Schedule</h3>
-            <p class="step-description">Select your preferred service, set your schedule, and provide the necessary details for your project.</p>
-          </div>
-          <div class="process-step">
-            <div class="step-number">3</div>
-            <h3 class="step-title">Get It Done</h3>
-            <p class="step-description">Our verified professionals will complete your service efficiently and to your satisfaction.</p>
-          </div>
-        {% endif %}
-      </div>
+<!-- Process Section -->
+<section class="process">
+  <div class="container">
+    <div class="section-header">
+      {% if request.user.is_authenticated %}
+        <div class="section-subtitle">QUICK ACCESS</div>
+        <h2 class="section-title">What Would You Like to Do?</h2>
+      {% else %}
+        <div class="section-subtitle">HOW IT WORKS</div>
+        <h2 class="section-title">Our Simple 3-Step Process</h2>
+      {% endif %}
     </div>
-  </section>
+    <div class="process-steps">
+      {% if request.user.is_authenticated %}
+        <div class="process-step">
+          <div class="step-number">🔍</div>
+          <h3 class="step-title">Find Services</h3>
+          <p class="step-description">Browse our catalog of professional services and find the perfect match for your needs.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">📋</div>
+          <h3 class="step-title">Manage Bookings</h3>
+          <p class="step-description">View your profile to track current bookings, service history, and manage your account.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">⭐</div>
+          <h3 class="step-title">Rate & Review</h3>
+          <p class="step-description">Share your experience and help other users find the best service providers.</p>
+        </div>
+      {% else %}
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Browse Services</h3>
+          <p class="step-description">Explore our wide range of professional services and find exactly what you need for your project.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Book & Schedule</h3>
+          <p class="step-description">Select your preferred service, set your schedule, and provide the necessary details for your project.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Get It Done</h3>
+          <p class="step-description">Our verified professionals will complete your service efficiently and to your satisfaction.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
 
-  <!-- About Section -->
-  <section class="about" id="about">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-subtitle">ABOUT US</div>
-        <h2 class="section-title">Who We Are</h2>
-      </div>
-      <p>NetFix is your one-stop platform for connecting with trusted service providers. We aim to make finding and booking professional services easy and reliable.</p>
+<!-- About Section -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-subtitle">ABOUT US</div>
+      <h2 class="section-title">Who We Are</h2>
     </div>
-  </section>
+    <p>NetFix is your one-stop platform for connecting with trusted service providers. We aim to make finding and booking professional services easy and reliable.</p>
+  </div>
+</section>
 
-  <!-- Contact Section -->
-  <section class="contact" id="contact">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-subtitle">GET IN TOUCH</div>
-        <h2 class="section-title">Contact Us</h2>
-      </div>
-      <p>Email: support@netfix.com</p>
-      <p>Phone: (123) 456-7890</p>
+<!-- Contact Section -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-subtitle">GET IN TOUCH</div>
+      <h2 class="section-title">Contact Us</h2>
     </div>
-  </section>
+    <p>Email: support@netfix.com</p>
+    <p>Phone: (123) 456-7890</p>
+  </div>
+</section>
 {% endblock %}
