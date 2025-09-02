@@ -290,7 +290,7 @@ form .logout-button:hover,
 
 .btn-secondary {
     background: transparent;
-    color: white;
+    color: rgb(41, 26, 26);
     padding: 1rem 2rem;
     border: 2px solid white;
     border-radius: 5px;
