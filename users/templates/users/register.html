@@ -18,6 +18,9 @@
         {% csrf_token %}
         <input type="hidden" name="user_type" id="userType" value="customer">
 
+        <!-- Display general form errors -->
+        <div id="generalErrors" class="form-errors" style="display: none;"></div>
+
         <!-- User Type Toggle Buttons -->
         <div class="user-type-toggle">
             <button type="button" class="toggle-btn active" onclick="showForm('customer', this)">
@@ -207,22 +210,37 @@
             
             console.log('Extracted values:', {email, username, password1, password2, dob, field});
             
-            // Clear previous error messages
-            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+            // Clear previous error messages and classes
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.textContent = '';
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('input, select').forEach(el => {
+                el.classList.remove('error');
+            });
             
             // Basic validation - just check if required fields have values
             if (!email) {
                 errors.email = 'Email is required';
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errors.email = 'Please enter a valid email address';
                 isValid = false;
             }
             
             if (!username) {
                 errors.username = 'Username is required';
                 isValid = false;
+            } else if (username.length < 3) {
+                errors.username = 'Username must be at least 3 characters long';
+                isValid = false;
             }
             
             if (!password1) {
                 errors.password1 = 'Password is required';
+                isValid = false;
+            } else if (password1.length < 8) {
+                errors.password1 = 'Password must be at least 8 characters long';
                 isValid = false;
             }
             
@@ -253,10 +271,19 @@
                 // Find any field that contains this name
                 const fieldElement = activeContainer.querySelector(`input[name*="${errorField}"], select[name*="${errorField}"], input[id*="${errorField}"], select[id*="${errorField}"]`);
                 if (fieldElement) {
-                    const errorElement = fieldElement.parentNode.querySelector('.error-message');
-                    if (errorElement) {
-                        errorElement.textContent = errors[errorField];
+                    // Add error class to field
+                    fieldElement.classList.add('error');
+                    
+                    // Find or create error message element
+                    let errorElement = fieldElement.parentNode.querySelector('.error-message');
+                    if (!errorElement) {
+                        errorElement = document.createElement('div');
+                        errorElement.className = 'error-message';
+                        fieldElement.parentNode.appendChild(errorElement);
                     }
+                    
+                    errorElement.textContent = errors[errorField];
+                    errorElement.style.display = 'block';
                 }
             });
             
@@ -314,15 +341,50 @@
                             window.location.href = data.redirect;
                         } else {
                             console.error('Server errors:', data.errors);
+                            
+                            // Clear previous errors
+                            document.querySelectorAll('.error-message').forEach(el => {
+                                el.textContent = '';
+                                el.style.display = 'none';
+                            });
+                            document.querySelectorAll('input, select').forEach(el => {
+                                el.classList.remove('error');
+                            });
+                            
+                            // Hide general errors initially
+                            const generalErrorsDiv = document.getElementById('generalErrors');
+                            generalErrorsDiv.style.display = 'none';
+                            generalErrorsDiv.innerHTML = '';
+                            
                             // Display server errors
-                            Object.entries(data.errors).forEach(([field, error]) => {
-                                console.log('Processing error for field:', field, error);
+                            Object.entries(data.errors).forEach(([field, errors]) => {
+                                console.log('Processing error for field:', field, errors);
+                                
+                                // Handle general/non-field errors
+                                if (field === '__all__' || field === 'non_field_errors') {
+                                    generalErrorsDiv.innerHTML = Array.isArray(errors) ? errors.join('<br>') : errors;
+                                    generalErrorsDiv.style.display = 'block';
+                                    return;
+                                }
+                                
+                                // Find the field element
                                 const fieldElement = document.querySelector(`input[name*="${field}"], select[name*="${field}"], input[id*="${field}"], select[id*="${field}"]`);
                                 if (fieldElement && !fieldElement.disabled) {
-                                    const errorElement = fieldElement.parentNode.querySelector('.error-message');
-                                    if (errorElement) {
-                                        errorElement.textContent = Array.isArray(error) ? error[0] : error;
+                                    // Add error class to field
+                                    fieldElement.classList.add('error');
+                                    
+                                    // Find or create error message element
+                                    let errorElement = fieldElement.parentNode.querySelector('.error-message');
+                                    if (!errorElement) {
+                                        errorElement = document.createElement('div');
+                                        errorElement.className = 'error-message';
+                                        fieldElement.parentNode.appendChild(errorElement);
                                     }
+                                    
+                                    // Display error message
+                                    const errorText = Array.isArray(errors) ? errors[0] : errors;
+                                    errorElement.textContent = errorText;
+                                    errorElement.style.display = 'block';
                                 }
                             });
                         }

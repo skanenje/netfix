@@ -33,9 +33,15 @@ def register(request):
                 else:
                     return JsonResponse({'success': False, 'errors': form.errors})
         except IntegrityError as e:
-            return JsonResponse({'success': False, 'errors': {'__all__': ['Registration failed. Please try again.']}})
+            error_message = 'Registration failed. Please try again.'
+            if 'UNIQUE constraint failed' in str(e):
+                if 'email' in str(e):
+                    error_message = 'An account with this email already exists.'
+                elif 'username' in str(e):
+                    error_message = 'This username is already taken.'
+            return JsonResponse({'success': False, 'errors': {'__all__': [error_message]}})
         except Exception as e:
-            return JsonResponse({'success': False, 'errors': {'__all__': ['An unexpected error occurred.']}})
+            return JsonResponse({'success': False, 'errors': {'__all__': ['An unexpected error occurred. Please try again.']}})
     return render(request, 'users/register.html', {
         'customer_form': customer_form,
         'company_form': company_form
@@ -47,12 +53,31 @@ def LoginUserView(request):
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('main:home')
-            else:
-                form.add_error(None, 'Invalid email or password')
+            
+            try:
+                user = authenticate(request, email=email, password=password)
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        return redirect('main:home')
+                    else:
+                        form.add_error(None, 'Your account has been deactivated. Please contact support.')
+                else:
+                    # Check if user exists to provide more specific error
+                    from .models import User
+                    try:
+                        User.objects.get(email=email)
+                        form.add_error('password', 'Incorrect password. Please try again.')
+                    except User.DoesNotExist:
+                        form.add_error('email', 'No account found with this email address.')
+            except Exception as e:
+                form.add_error(None, 'Login failed. Please try again.')
+        else:
+            # Add field-specific errors if form validation failed
+            if not form.cleaned_data.get('email'):
+                form.add_error('email', 'Email is required.')
+            if not form.cleaned_data.get('password'):
+                form.add_error('password', 'Password is required.')
     else:
         form = UserLoginForm()
     return render(request, 'users/login.html', {'form': form})

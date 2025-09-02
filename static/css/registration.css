@@ -85,3 +85,75 @@
     box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1) !important;
     transform: translateY(-1px) !important;
 }
+
+/* Error Message Styles */
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    border-radius: 6px;
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+.error-message:empty {
+    display: none;
+}
+
+/* Input field error state */
+.register-form input.error,
+.register-form select.error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1) !important;
+}
+
+/* General error container for non-field errors */
+.form-errors {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    color: #dc3545;
+}
+
+.form-errors ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.form-errors li {
+    margin-bottom: 0.5rem;
+}
+
+.form-errors li:last-child {
+    margin-bottom: 0;
+}
+
+/* Success message styles */
+.success-message {
+    color: #28a745;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    border-radius: 6px;
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

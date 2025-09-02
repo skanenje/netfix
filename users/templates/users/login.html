@@ -1,6 +1,8 @@
 {% extends 'main/base.html' %}
+{% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/registration.css' %}">
 <div class="registration-page">
     <div class="register-container">
             <div class="register-header">
@@ -14,20 +16,40 @@
 
             <form class="register-form" method="post">
                 {% csrf_token %}
-                {% if form.errors %}
-                    <div class="error-message show">
-                        {{ form.errors }}
+                
+                <!-- Display non-field errors -->
+                {% if form.non_field_errors %}
+                    <div class="form-errors">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
                     </div>
                 {% endif %}
                 
                 <div class="form-group">
                     <label class="form-label" for="email">Email Address</label>
                     {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="error-message">
+                            {% for error in form.email.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
+                
                 <div class="form-group">
                     <label class="form-label" for="password">Password</label>
                     {{ form.password }}
+                    {% if form.password.errors %}
+                        <div class="error-message">
+                            {% for error in form.password.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
+                
                 <button type="submit" class="submit-btn">Login</button>
                 <div class="login-link">
                     Don't have an account? <a href="{% url 'users:register' %}">Register here</a>
@@ -35,4 +57,59 @@
             </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.register-form');
+    const emailField = document.querySelector('input[name="email"]');
+    const passwordField = document.querySelector('input[name="password"]');
+    
+    // Add real-time validation
+    function validateField(field, validationFn, errorMessage) {
+        field.addEventListener('blur', function() {
+            const errorElement = field.parentNode.querySelector('.error-message');
+            
+            if (!validationFn(field.value)) {
+                field.classList.add('error');
+                if (!errorElement) {
+                    const newErrorElement = document.createElement('div');
+                    newErrorElement.className = 'error-message';
+                    field.parentNode.appendChild(newErrorElement);
+                }
+                field.parentNode.querySelector('.error-message').textContent = errorMessage;
+                field.parentNode.querySelector('.error-message').style.display = 'block';
+            } else {
+                field.classList.remove('error');
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+            }
+        });
+        
+        field.addEventListener('input', function() {
+            if (field.classList.contains('error') && validationFn(field.value)) {
+                field.classList.remove('error');
+                const errorElement = field.parentNode.querySelector('.error-message');
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+            }
+        });
+    }
+    
+    if (emailField) {
+        validateField(emailField, 
+            value => value.trim() !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+            'Please enter a valid email address'
+        );
+    }
+    
+    if (passwordField) {
+        validateField(passwordField,
+            value => value.trim() !== '',
+            'Password is required'
+        );
+    }
+});
+</script>
 {% endblock %}
