@@ -1,68 +1,184 @@
 {% extends 'main/base.html' %}
-{% block title %}
-    User Profile
-{% endblock %}
+{% load static %}
+
+{% block title %}Profile - NetFix{% endblock %}
 
 {% block content %}
-<div class="content">
-    <div class="profile-header">
-        <div class="profile-info">
-            <h2>{{ user.username }}{% if user.is_customer and user_age %} ({{ user_age }} y/o){% endif %}</h2>
-            <p>{{ user.email }}</p>
-            {% if user.is_company and company %}
-                <p>Field of Work: {{ company.field }}</p>
-            {% endif %}
+<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+<div class="registration-page">
+    <div class="register-container profile-container">
+        <div class="register-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    {% if user.is_customer %}👤
+                    {% elif user.is_company %}🏢
+                    {% else %}👤
+                    {% endif %}
+                </div>
+                <span>User Profile</span>
+            </div>
+            <h1 class="register-title">{{ user.username }}</h1>
+            <p class="register-subtitle">
+                {% if user.is_customer %}
+                    Customer Account
+                {% elif user.is_company and company %}
+                    {{ company.field }} Service Provider
+                {% else %}
+                    User Account
+                {% endif %}
+            </p>
         </div>
-        <span class="badge">
+
+        <div class="register-form">
+            {% if error %}
+                <div class="form-errors">
+                    <strong>Profile Issue:</strong> {{ error }}
+                </div>
+            {% endif %}
+
+            <!-- User Information Grid -->
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Username</div>
+                    <div class="info-value">{{ user.username }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">{{ user.email }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Account Type</div>
+                    <div class="info-value">
+                        {% if user.is_customer %}
+                            Customer
+                        {% elif user.is_company and company %}
+                            Service Provider
+                        {% else %}
+                            User
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if user.is_customer and user_age %}
+                    <div class="info-item">
+                        <div class="info-label">Age</div>
+                        <div class="info-value">{{ user_age }} years old</div>
+                    </div>
+                {% endif %}
+                
+                {% if user.is_company and company %}
+                    <div class="info-item">
+                        <div class="info-label">Field of Work</div>
+                        <div class="info-value">{{ company.field }}</div>
+                    </div>
+                {% endif %}
+                
+                <div class="info-item">
+                    <div class="info-label">Member Since</div>
+                    <div class="info-value">{{ user.date_joined|date:"F Y" }}</div>
+                </div>
+            </div>
+
+            <!-- Services Section -->
             {% if user.is_customer %}
-                Customer
-            {% elif user.is_company and company %}
-                {{ company.field }} Company
-            {% else %}
-                User
+                <div class="section-header">
+                    <h3>Service History</h3>
+                    <p>Your previously requested services</p>
+                </div>
+                
+                {% if services %}
+                    <div class="services-history">
+                        {% for req in services %}
+                            <div class="history-item">
+                                <div class="history-header">
+                                    <h4>
+                                        <a href="{% url 'services:service_detail' req.service.id %}" class="service-link">
+                                            {{ req.service.name }}
+                                        </a>
+                                    </h4>
+                                    <span class="history-cost">{{ req.calculated_cost }}</span>
+                                </div>
+                                <div class="history-details">
+                                    <div class="history-info">
+                                        <span class="info-label">Category:</span>
+                                        <span class="info-value">{{ req.service.field }}</span>
+                                    </div>
+                                    <div class="history-info">
+                                        <span class="info-label">Provider:</span>
+                                        <span class="info-value">
+                                            <a href="{% url 'users:company_profile' req.service.company.user.id %}" class="provider-link">
+                                                {{ req.service.company.user.username }}
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="history-info">
+                                        <span class="info-label">Requested:</span>
+                                        <span class="info-value">{{ req.requested_date|date:"M d, Y" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-services-modal">
+                        <div class="no-services-icon">📋</div>
+                        <h3>No Service History</h3>
+                        <p>You haven't requested any services yet.</p>
+                        <a href="{% url 'services:services_list' %}" class="btn-primary">Browse Services</a>
+                    </div>
+                {% endif %}
+                
+            {% elif user.is_company %}
+                <div class="section-header">
+                    <h3>Your Services</h3>
+                    <p>Services you provide to customers</p>
+                </div>
+                
+                {% if services %}
+                    <div class="services-grid">
+                        {% for service in services %}
+                            <div class="service-card-modal">
+                                <div class="service-card-header">
+                                    <h3 class="service-name">{{ service.name }}</h3>
+                                    <div class="service-price">€{{ service.price_per_hour }}/hr</div>
+                                </div>
+                                
+                                <div class="service-info-grid">
+                                    <div class="service-info-item">
+                                        <span class="info-label">Category</span>
+                                        <span class="info-value">{{ service.field }}</span>
+                                    </div>
+                                    <div class="service-info-item">
+                                        <span class="info-label">Created</span>
+                                        <span class="info-value">{{ service.created_date|date:"M d, Y" }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="service-actions">
+                                    <a href="{% url 'services:service_detail' service.id %}" class="btn-primary btn-small">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-services-modal">
+                        <div class="no-services-icon">🔧</div>
+                        <h3>No Services Created</h3>
+                        <p>You haven't created any services yet.</p>
+                        <a href="{% url 'services:services_create' %}" class="btn-primary">Create Your First Service</a>
+                    </div>
+                {% endif %}
             {% endif %}
-        </span>
-    </div>
 
-    {% if error %}
-        <div class="profile-error">
-            <strong>Profile Issue:</strong> {{ error }}
+            <div class="login-link">
+                <a href="{% url 'main:home' %}">← Back to Home</a>
+                | <a href="{% url 'services:services_list' %}">Browse Services</a>
+            </div>
         </div>
-    {% endif %}
-
-    {% if user.is_customer %}
-        <p class="title">Previous Requested Services</p>
-        {% for req in services %}
-            <div class="service_list_info">
-                <a href="{% url 'services:service_detail' req.service.id %}">
-                    {{ req.service.name }}
-                </a> ({{ req.service.field }})
-                <p style="margin: 0; display: inline-block;">❱❱ {{ req.calculated_cost }}</p>
-                <p style="margin: 0; display: inline-block;">❱❱ {{ req.requested_date }}</p>
-                <p style="float: right; margin: 0;">
-                    by <a href="{% url 'users:company_profile' req.service.company.user.id %}">
-                        {{ req.service.company.user.username }}
-                    </a>
-                </p>
-            </div>
-        {% empty %}
-            <div style="text-align: center; padding: 2rem; color: #666;">
-                <p>No requested services yet.</p>
-                <a href="{% url 'services:services_list' %}" class="btn-primary" style="display: inline-block; margin-top: 1rem;">Browse Services</a>
-            </div>
-        {% endfor %}
-    {% elif user.is_company %}
-        <p class="title">Available Services</p>
-        {% for service in services %}
-            <div class="list_services_profile">
-                <a href="{% url 'services:service_detail' service.id %}">{{ service.name }}</a> — {{ service.price_per_hour }}€/hour
-            </div>
-        {% empty %}
-            <div style="text-align: center; padding: 2rem; color: #666;">
-                <p>No services provided yet.</p>
-                <a href="{% url 'services:services_create' %}" class="btn-primary" style="display: inline-block; margin-top: 1rem;">Create Service</a>
-            </div>
-        {% endfor %}
-    {% endif %}
+    </div>
 </div>
 {% endblock %}

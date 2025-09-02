@@ -1,49 +1,97 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}
-    {% if page_title %}{{ page_title }}{% else %}Services List{% endif %}
+    {% if page_title %}{{ page_title }}{% else %}Services List{% endif %} - NetFix
 {% endblock %}
+
 {% block content %}
-<div class="content">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    
-    <p class="title">{% if page_title %}{{ page_title }}{% else %}All Services{% endif %}</p>
+<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+<div class="registration-page">
+    <div class="register-container services-list-container">
+        <div class="register-header">
+            <div class="logo">
+                <div class="logo-icon">📋</div>
+                <span>NetFix Services</span>
+            </div>
+            <h1 class="register-title">{% if page_title %}{{ page_title }}{% else %}All Services{% endif %}</h1>
+            <p class="register-subtitle">Browse our professional services</p>
+        </div>
 
-    {% if user.is_company %}
-        <a class="create_service" href="{% url 'services:services_create' %}">Create a New Service</a>
-    {% endif %}
+        <div class="register-form">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="form-errors">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
 
-    <ul class="services_list">
-        {% if services %}
-            {% for service in services %}
-                <li class="service_list_info">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <a href="{% url 'services:service_detail' service.id %}" class="service-link">
-                                {{ service.name }}
-                            </a>
-                            <span style="font-weight: bold; color: #4CAF50;">
-                                — {{ service.price_per_hour }}€/hour
-                            </span>
-                            <pre style="margin-top: 10px;">{{ service.description }}</pre>
+            {% if user.is_company %}
+                <div class="action-header">
+                    <a href="{% url 'services:services_create' %}" class="submit-btn" style="margin-bottom: 2rem;">
+                        + Create New Service
+                    </a>
+                </div>
+            {% endif %}
+
+            {% if services %}
+                <div class="services-grid">
+                    {% for service in services %}
+                        <div class="service-card-modal">
+                            <div class="service-card-header">
+                                <h3 class="service-name">{{ service.name }}</h3>
+                                <div class="service-price">€{{ service.price_per_hour }}/hr</div>
+                            </div>
+                            
+                            <div class="service-info-grid">
+                                <div class="service-info-item">
+                                    <span class="info-label">Category</span>
+                                    <span class="info-value">{{ service.field }}</span>
+                                </div>
+                                <div class="service-info-item">
+                                    <span class="info-label">Provider</span>
+                                    <span class="info-value">
+                                        <a href="{% url 'users:company_profile' service.company.user.id %}" class="provider-link">
+                                            {{ service.company.user.username }}
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="service-description">
+                                <p>{{ service.description|truncatewords:20 }}</p>
+                            </div>
+                            
+                            <div class="service-actions">
+                                <a href="{% url 'services:service_detail' service.id %}" class="btn-primary btn-small">
+                                    View Details
+                                </a>
+                                {% if request.user.is_customer %}
+                                    <a href="{% url 'services:request_service' service.id %}" class="btn-secondary btn-small">
+                                        Request
+                                    </a>
+                                {% endif %}
+                            </div>
                         </div>
-                        <p style="text-align: right; margin: 0; font-size: small;">
-                            by <a href="{% url 'users:company_profile' service.company.user.id %}">{{ service.company.user.username }}</a>
-                        </p>
-                    </div>
-                    {% if not forloop.last %}
-                        <div class="line"></div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-services-modal">
+                    <div class="no-services-icon">🔍</div>
+                    <h3>No Services Available</h3>
+                    <p>{% if page_title %}No {{ page_title|lower }} found.{% else %}No services have been created yet.{% endif %}</p>
+                    {% if not user.is_company %}
+                        <a href="{% url 'users:register' %}" class="btn-primary">Join as a Service Provider</a>
                     {% endif %}
-                </li>
-            {% empty %}
-                <h2 class="title">Sorry, no services available yet.</h2>
-            {% endfor %}
-        {% else %}
-            <h2 class="title">Sorry, no services available yet.</h2>
-        {% endif %}
-    </ul>
+                </div>
+            {% endif %}
+
+            <div class="login-link">
+                <a href="{% url 'main:home' %}">← Back to Home</a>
+                {% if not page_title %}
+                    | <a href="{% url 'services:most_requested' %}">Most Requested</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

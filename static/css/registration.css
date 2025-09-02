@@ -221,4 +221,353 @@ rvice Form Specific Styles */
     color: #45a049;
     text-decoration: none;
     transform: translateX(-2px);
+}/* 
+Modal Information Display Styles */
+
+/* Info Grid Layout */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.info-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 1.1rem;
+    word-wrap: break-word;
+}
+
+.price-highlight {
+    color: #4CAF50 !important;
+    font-weight: bold !important;
+    font-size: 1.3rem !important;
+}
+
+.description-text {
+    line-height: 1.6;
+    color: #555 !important;
+    font-size: 1rem !important;
+    font-weight: normal !important;
+}
+
+.provider-link {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.provider-link:hover {
+    color: #45a049;
+    text-decoration: underline;
+}
+
+/* Services List Container */
+.services-list-container {
+    max-width: 900px;
+}
+
+.profile-container {
+    max-width: 800px;
+}
+
+/* Services Grid */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.service-card-modal {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.service-card-modal:hover {
+    border-color: #4CAF50;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+    transform: translateY(-2px);
+}
+
+.service-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.service-name {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+    flex: 1;
+}
+
+.service-price {
+    background: #4CAF50;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.service-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.service-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.service-info-item .info-label {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.service-info-item .info-value {
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+.service-description {
+    margin-bottom: 1rem;
+}
+
+.service-description p {
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.service-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-start;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+    border-radius: 6px !important;
+}
+
+/* No Services Modal */
+.no-services-modal {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border: 2px dashed #ddd;
+    margin: 2rem 0;
+}
+
+.no-services-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+.no-services-modal h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.no-services-modal p {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+/* Action Header */
+.action-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Section Headers */
+.section-header {
+    text-align: center;
+    margin: 2rem 0 1.5rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.section-header h3 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    color: #666;
+    margin: 0;
+}
+
+/* Services History */
+.services-history {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.history-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    border-left: 4px solid #4CAF50;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.history-header h4 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.history-header h4 .service-link {
+    color: #2c3e50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.history-header h4 .service-link:hover {
+    color: #4CAF50;
+    text-decoration: underline;
+}
+
+.history-cost {
+    background: #4CAF50;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.history-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.history-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.history-info .info-label {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 600;
+}
+
+.history-info .info-value {
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+    
+    .service-price {
+        text-align: center;
+    }
+    
+    .service-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-actions {
+        flex-direction: column;
+    }
+    
+    .history-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .history-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .services-list-container,
+    .profile-container {
+        margin: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .service-card-modal {
+        padding: 1rem;
+    }
+    
+    .history-item {
+        padding: 1rem;
+    }
+    
+    .no-services-modal {
+        padding: 2rem 1rem;
+    }
+    
+    .no-services-icon {
+        font-size: 2rem;
+    }
 }

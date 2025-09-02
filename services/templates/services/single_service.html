@@ -1,59 +1,79 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}{{ service.name }} - NetFix{% endblock %}
 
 {% block content %}
-<div class="content">
-    <div class="service-detail-container">
-        <div class="service-header">
-            <h1 class="service-name">{{ service.name }}</h1>
-            <div class="service-price">€{{ service.price_per_hour }}/hour</div>
-        </div>
-        
-        <div class="service-meta">
-            <div class="service-provider">
-                <span class="provider-label">Service Provider:</span>
-                <a href="{% url 'users:company_profile' service.company.user.id %}" class="provider-link">
-                    {{ service.company.user.username }}
-                </a>
+<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+<div class="registration-page">
+    <div class="register-container">
+        <div class="register-header">
+            <div class="logo">
+                <div class="logo-icon">🔧</div>
+                <span>Service Details</span>
             </div>
-            <div class="service-category">
-                <span class="category-label">Category:</span>
-                <span class="category-value">{{ service.field }}</span>
-            </div>
+            <h1 class="register-title">{{ service.name }}</h1>
+            <p class="register-subtitle">{{ service.field }} Service</p>
         </div>
 
-        <div class="service-description">
-            <h3>Description</h3>
-            <p>{{ service.description|linebreaks }}</p>
-        </div>
+        <div class="register-form">
+            <!-- Service Information Grid -->
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Service Name</div>
+                    <div class="info-value">{{ service.name }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Price per Hour</div>
+                    <div class="info-value price-highlight">€{{ service.price_per_hour }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Category</div>
+                    <div class="info-value">{{ service.field }}</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Service Provider</div>
+                    <div class="info-value">
+                        <a href="{% url 'users:company_profile' service.company.user.id %}" class="provider-link">
+                            {{ service.company.user.username }}
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-label">Created Date</div>
+                    <div class="info-value">{{ service.created_date|date:"F d, Y" }}</div>
+                </div>
+                
+                <div class="info-item full-width">
+                    <div class="info-label">Description</div>
+                    <div class="info-value description-text">{{ service.description|linebreaks }}</div>
+                </div>
+            </div>
 
-        {% if request.user.is_authenticated %}
-            {% if request.user.is_customer %}
-                <div class="service-actions">
-                    <a href="{% url 'services:request_service' service.id %}" class="btn-primary">
+            <!-- Action Buttons -->
+            {% if request.user.is_authenticated %}
+                {% if request.user.is_customer %}
+                    <button type="button" class="submit-btn" onclick="window.location.href='{% url 'services:request_service' service.id %}'">
                         Request This Service
-                    </a>
-                    <a href="{% url 'services:services_list' %}" class="btn-secondary">
-                        Back to Services
-                    </a>
-                </div>
+                    </button>
+                {% endif %}
             {% else %}
-                <div class="service-actions">
-                    <a href="{% url 'services:services_list' %}" class="btn-secondary">
-                        Back to Services
-                    </a>
-                </div>
-            {% endif %}
-        {% else %}
-            <div class="service-actions">
-                <a href="{% url 'users:login_user' %}" class="btn-primary">
+                <button type="button" class="submit-btn" onclick="window.location.href='{% url 'users:login_user' %}'">
                     Login to Request Service
-                </a>
-                <a href="{% url 'services:services_list' %}" class="btn-secondary">
-                    Back to Services
-                </a>
+                </button>
+            {% endif %}
+
+            <div class="login-link">
+                <a href="{% url 'services:services_list' %}">← Back to All Services</a>
+                {% if service.field %}
+                    | <a href="{% url 'services:services_field' service.field|lower|slugify %}">{{ service.field }} Services</a>
+                {% endif %}
             </div>
-        {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
